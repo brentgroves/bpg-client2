@@ -1,0 +1,26 @@
+{
+  "name": "notes-app-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "amazon-cognito-identity-js": "^1.21.0",
+    "dateformat": "^3.0.2",
+    "jsreport-browser-client-dist": "^1.0.4",
+    "moment": "^2.19.2",
+    "react": "^16.0.0",
+    "react-bootstrap": "^0.31.3",
+    "react-datetime": "^2.11.0",
+    "react-dom": "^16.0.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.14",
+    "react-split-pane": "^0.1.71",
+    "react-widgets": "^4.1.1",
+    "react-widgets-moment": "^4.0.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

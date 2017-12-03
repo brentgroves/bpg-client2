@@ -1,0 +1,12 @@
+@media all and (min-width: 680px) {
+  .ToolCostSummaryByPlant {
+    padding: 60px 0;
+  }
+
+  .ToolCostSummaryByPlant {
+    margin: 0 auto; 
+    max-width: 320px;
+  }
+}
+
+
