@@ -9,6 +9,7 @@
     "moment": "^2.19.2",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.3",
+    "react-collapsible": "^2.0.3",
     "react-datetime": "^2.11.0",
     "react-dom": "^16.0.0",
     "react-grid-layout": "^0.16.0",
@@ -16,7 +17,8 @@
     "react-scripts": "1.0.14",
     "react-split-pane": "^0.1.71",
     "react-widgets": "^4.1.1",
-    "react-widgets-moment": "^4.0.4"
+    "react-widgets-moment": "^4.0.4",
+    "semantic-ui-react": "^0.77.0"
   },
   "scripts": {
     "start": "react-scripts start",
