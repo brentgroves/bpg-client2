@@ -5,6 +5,7 @@ import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import LoaderButton from "../components/LoaderButton";
+import MyReport from './MyReport';
 //var jsreport = require("jsreport-client")('http://localhost:5488', 'admin', 'password')
 var jsreport = require('jsreport-browser-client-dist');
 jsreport.serverUrl = 'http://localhost:5488';
@@ -55,6 +56,9 @@ export default class Home extends React.Component {
       plt11Checked: false 
 
     };
+
+    // This binding is necessary to make `this` work in the callback
+    this.handleOnResize = this.handleOnResize.bind(this);
 
     // This binding is necessary to make `this` work in the callback
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
@@ -171,6 +175,7 @@ export default class Home extends React.Component {
 
   handleSubmit = async event => {
     event.preventDefault();
+
  //   this.setState({ isLoading: true });
     try {
 
@@ -210,7 +215,7 @@ export default class Home extends React.Component {
 
       request2.data.dtStart = dtStart;
       request2.data.dtEnd = dtEnd;
-request2.data.plantList=','
+      request2.data.plantList=','
       if(this.state.plt2Checked===true) request2.data.plantList += '2,';
       if(this.state.plt3Checked===true) request2.data.plantList += '3,';
       if(this.state.plt5Checked===true) request2.data.plantList += '5,';
@@ -219,9 +224,42 @@ request2.data.plantList=','
       if(this.state.plt8Checked===true) request2.data.plantList += '8,';
       if(this.state.plt9Checked===true) request2.data.plantList += '9,';
       if(this.state.plt11Checked===true) request2.data.plantList += '11,';
+//      this.props.history.push("/myreport");
+
+//      jsreport.render('detail', request2);
+      this.setState({ step: 2 });
+
+      var detail =document.getElementById('detail');
+      var pane = detail.parentElement.parentElement;
+      var splitPane = pane.parentElement;
+ //     splitPane.addEventListener("resize", this.handleOnResize);
+//display report in placeholder element
 
 
-      jsreport.render('_blank', request2);
+jsreport.render(pane, request2);
+/*
+      jsreport.renderAsync(request2).then(function(res) {
+
+          var detail =document.getElementById('detail');
+          var pane = detail.parentElement.parentElement
+          var paneHeight = pane.clientHeight;
+          var paneWidth = pane.clientWidth;
+
+
+          var html = 
+            '<iframe style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>';
+
+
+          detail.innerHTML = html ;
+         // var height=  detail.clientHeight;
+
+ //  iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+ //   iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+      });
+
+*/
+//https://forum.jsreport.net/topic/326/getting-html-from-html-with-browser-client/3
+//      jsreport.render('_blank', request2);
       /*
               jsreport.render({ 
                   template: { 
@@ -241,6 +279,19 @@ request2.data.plantList=','
     }
 
   }
+
+  handleOnResize = (event) => {
+      var detail =document.getElementById('detail');
+      var pane = detail.parentElement.parentElement;
+      var splitPane = pane.parentElement;
+
+      var splitPaneHeight = splitPane.clientHeight;
+      var splitPaneWidth = splitPane.clientWidth;
+      detail.height = splitPaneHeight;
+      detail.width = splitPaneWidth;
+
+  }
+
 
   plt2Change = (event) => {
 //    this.setState({ checkboxChecked: evt.target.checked });
@@ -329,7 +380,7 @@ request2.data.plantList=','
 var myForm;
 
 if(this.state.step===1){
-myForm =
+  myForm =
         <form onSubmit={this.handleSubmit}>
           <Row>  
             <Col xs={2} >  
@@ -452,16 +503,14 @@ myForm =
            </Row> 
          </form>
 }else{
-  myForm = "";
-
+  myForm = '';
 }
 
     return (
       <div >
       {myForm}
 
- 
- 
+
 
       </div>
     )

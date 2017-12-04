@@ -1,17 +1,18 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
+import ReactDOM from "react-dom";
 import { Link, withRouter } from "react-router-dom";
-import { Nav,NavItem,Navbar,Row,Col,Accordion,Panel,ListGroup,ListGroupItem } from "react-bootstrap";
-import "./App.css";
 import Routes from "./Routes";
-import RouteNavItem from "./components/RouteNavItem";
-import { authUser, signOutUser } from "./libs/awsLib";
+import registerServiceWorker from "./registerServiceWorker";
 import SplitPane from 'react-split-pane';
-//import "./index.css";
+import { authUser, signOutUser } from "./libs/awsLib";
+import "./index.css";
+import MyNavBar from './containers/MyNavBar';
+import MyAccord from './containers/MyAccord';
+import { Grid} from "react-bootstrap";
+//https://www.npmjs.com/package/react-split-pane
 
 
-
-
-
+var ReactGridLayout = require('react-grid-layout');
 
 
 
@@ -24,6 +25,9 @@ class App extends Component {
       isAuthenticated: false,
       isAuthenticating: true
     };
+        // This binding is necessary to make `this` work in the callback
+    this.handleLogout = this.handleLogout.bind(this);
+
   }
   async componentDidMount() {
     try {
@@ -52,84 +56,28 @@ class App extends Component {
   render() {
     const childProps = {
       isAuthenticated: this.state.isAuthenticated,
-      userHasAuthenticated: this.userHasAuthenticated
+      userHasAuthenticated: this.userHasAuthenticated,
+      handleLogout: this.handleLogout
     };
+        // layout is an array of objects, see the demo for more complete usage
+    var layout = [
+      {i: 'a', x: 0, y: 0, w: 1, h: 2, static: true},
+      {i: 'b', x: 1, y: 1, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'c', x: 4, y: 2, w: 1, h: 2}
+    ];//https://github.com/STRML/react-grid-layout#usage
     return (
-      !this.state.isAuthenticating &&      
-      <div className="App container">
-        <Navbar inverse fluid collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/">Busche Reporter</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-            {this.state.isAuthenticated
-              ? <NavItem onClick={this.handleLogout}>Logout</NavItem>
-              : [
-                  <RouteNavItem key={1} href="/signup">
-                    Signup
-                  </RouteNavItem>,
-                  <RouteNavItem key={2} href="/login">
-                    Login
-                  </RouteNavItem>
-                ]}
-            </Nav>
-          </Navbar.Collapse>
 
-        </Navbar>
+      <ReactGridLayout className="layout" layout={layout} cols={12} rowHeight={230} width={1200}>
+        <div key="a">
 
-        {this.state.isAuthenticated
-        ? [
-        <Row key="11">
-           <Col xs={3} > 
-            <Accordion>
-              <Panel header="Engineering" eventKey="1">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Production" eventKey="2">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Purchasing" eventKey="3">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Quality" eventKey="4">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Sales" eventKey="5">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-            </Accordion>
-           </Col> 
-            <Col xs={9} style={{}}> 
-              <Routes childProps={childProps} />
-            </Col>
-          </Row>
-         ] : <Routes childProps={childProps} />}
+        </div>
+        <div key="b">
+                  <MyNavBar childProps={childProps} />
 
-      </div>
+        </div>
+        <div id='detail' key="c">c</div>
+      </ReactGridLayout>
+
     );
   }
 }
@@ -137,86 +85,64 @@ class App extends Component {
 export default withRouter(App);
 
 /*
-
-      <div className="App container">
-        <Navbar inverse fluid collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/">Busche Reporter</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-            {this.state.isAuthenticated
-              ? <NavItem onClick={this.handleLogout}>Logout</NavItem>
-              : [
-                  <RouteNavItem key={1} href="/signup">
-                    Signup
-                  </RouteNavItem>,
-                  <RouteNavItem key={2} href="/login">
-                    Login
-                  </RouteNavItem>
-                ]}
-            </Nav>
-          </Navbar.Collapse>
-
-        </Navbar>
-        {this.state.isAuthenticated
-        ? [
-        <Row key="11">
-           <Col xs={3} > 
-            <Accordion>
-              <Panel header="Engineering" eventKey="1">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Production" eventKey="2">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Purchasing" eventKey="3">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Quality" eventKey="4">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel header="Sales" eventKey="5">
-                <ListGroup>
-                  <ListGroupItem onClick={() => {this.props.history.push("/tcsbyplant");}}>Tool Cost Summary by Plant</ListGroupItem>
-                  <ListGroupItem>Item 2</ListGroupItem>
-                  <ListGroupItem>...</ListGroupItem>
-                </ListGroup>
-              </Panel>
-            </Accordion>
-           </Col> 
-            <Col xs={9} style={{}}> 
+    <SplitPane split="horizontal" allowResize={false} defaultSize={70}>
+        <div key="1">
+          <MyNavBar childProps={childProps} />
+        </div>
+        <SplitPane split="vertical" defaultSize={300}>
+            <div key="2" >
+              <MyAccord childProps={childProps} />
+            </div>
+            <div key="3" >
               <Routes childProps={childProps} />
-            </Col>
-          </Row>
-         ] : <Routes childProps={childProps} />}
-
-      </div>
-    );
-  }
-}
-
-export default withRouter(App);
+               <div id='detail'></div>
+            </div>
+        </SplitPane>
+    </SplitPane>
 
 
+
+    <SplitPane split="horizontal" allowResize={false} defaultSize={70}>
+        <div key="1">
+          <MyNavBar childProps={childProps} />
+        </div>
+        <SplitPane split="vertical" defaultSize={120}>
+            <div key="2" >
+              <MyAccord childProps={childProps} />
+            </div>
+            <SplitPane split="vertical" >
+            <div key="3" >
+              <Routes childProps={childProps} />
+            </div>
+                  <div id='detail'></div>
+            </SplitPane>
+        </SplitPane>
+    </SplitPane>
+
+
+                  <div style={{display: 'none'}} id='detail'></div>
+
+        <SplitPane defaultSize={150} split="vertical">
+            <div key="2" >
+              <MyAccord childProps={childProps} />
+            </div>
+            <div key="3" >
+              <Routes childProps={childProps} />
+            </div>
+            <div key="4" >
+              <Routes childProps={childProps} />
+                  <div id='detail'></div>
+            </div>
+
+        </SplitPane>
+
+
+            <div key="4" >
+            <Row>  
+              <Col xs={12} >  
+                  <div id='detail'></div>
+              </Col>  
+            </Row>
+            </div>
 
 */
