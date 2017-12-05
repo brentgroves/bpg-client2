@@ -227,40 +227,63 @@ export default class Home extends React.Component {
 //      this.props.history.push("/myreport");
 
 //      jsreport.render('detail', request2);
-      this.setState({ step: 2 });
+      this.props.setRptStep(2);
+/*
+     var detail =document.getElementById('detail');
+     var divContainer;
+     var verticalPane;
+     if(detail===null){
+        divContainer = detail.parentElement;
+        verticalPane = divContainer.parentElement;
 
-      var detail =document.getElementById('detail');
-      var pane = detail.parentElement.parentElement;
-      var splitPane = pane.parentElement;
+     }else{
+        verticalPane =document.getElementById('myRpt').parentElement;
+
+     }
+     */
  //     splitPane.addEventListener("resize", this.handleOnResize);
 //display report in placeholder element
 
 
-jsreport.render(pane, request2);
-/*
+//jsreport.render(verticalPane, request2);
+
       jsreport.renderAsync(request2).then(function(res) {
 
-          var detail =document.getElementById('detail');
-          var pane = detail.parentElement.parentElement
-          var paneHeight = pane.clientHeight;
-          var paneWidth = pane.clientWidth;
+         var detail =document.getElementById('detail');
+         var divContainer;
+         var verticalPane;
+         var splitPane;
+         if(detail!==null){
+            divContainer = detail.parentElement;
+            verticalPane = divContainer.parentElement;
+           // splitPane = verticalPane.parentElement;
+         }else{
+            verticalPane =document.getElementById('myRpt').parentElement;
+         }
+         var paneHeight = verticalPane.clientHeight;
+         var paneWidth = verticalPane.clientWidth;
 
 
           var html = 
-            '<iframe style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>';
+          '<iframe id="myRpt" style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>';
 
+          verticalPane.innerHTML = html ;
+      });
 
-          detail.innerHTML = html ;
+/*
+          var html = '<html>' +
+                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
+                  '<body>' +                                
+                  '<iframe id="myRpt" src="' +  res.toDataURI() + '"></iframe>' +
+                  '</body></html>';
+          verticalPane.innerHTML = html ;
          // var height=  detail.clientHeight;
 
  //  iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
  //   iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-      });
 
-*/
 //https://forum.jsreport.net/topic/326/getting-html-from-html-with-browser-client/3
 //      jsreport.render('_blank', request2);
-      /*
               jsreport.render({ 
                   template: { 
                       name: 'WorkSumTransactions',
@@ -379,7 +402,7 @@ jsreport.render(pane, request2);
 
 var myForm;
 
-if(this.state.step===1){
+if(this.props.getRptStep()===1){
   myForm =
         <form onSubmit={this.handleSubmit}>
           <Row>  
