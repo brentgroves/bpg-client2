@@ -264,8 +264,12 @@ export default class Home extends React.Component {
          var paneWidth = verticalPane.clientWidth;
 
 
-          var html = 
-          '<iframe id="myRpt" style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>';
+          var html = '<html>' +
+                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
+                  '<body>' + 
+
+          '<iframe id="myRpt" style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>' +
+                  '</body></html>';
 
           verticalPane.innerHTML = html ;
       });
