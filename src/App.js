@@ -28,7 +28,8 @@ class App extends Component {
       isAuthenticating: true,
       activeIndex: 0,
       rptStep: 1,
-      rptId: 0
+      rptId: 0,
+      visible:true
     }
     // This binding is necessary to make `this` work in the callback
     this.handleLogout = this.handleLogout.bind(this)
@@ -40,9 +41,9 @@ class App extends Component {
     this.getRptStep = this.getRptStep.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.handleResize = this.handleResize.bind(this)
-   // window.onresize = this.handleResize;
-
-
+    // This binding is necessary to make `this` work in the callback
+    this.rmReport = this.rmReport.bind(this)
+    // window.onresize = this.handleResize;
   }
   async componentDidMount() {
     try {
@@ -60,24 +61,27 @@ class App extends Component {
     this.setState({ isAuthenticated: authenticated })
   }
 
+  rmReport = () => {
+    let detail = document.getElementById('detail')
+    detail.innerHTML = ''
+  }
+
   setRptStep = rptStep => {
-
-  	if(rptStep===1){
-	    var detail =document.getElementById('detail');
-	    detail.innerHTML = '' ;        
-
+  	if (rptStep === 1) {
+	    let detail = document.getElementById('detail')
+	    detail.innerHTML = ''
   	}
     this.setState({ rptStep: rptStep })
-
   }
   getRptStep = () => {
     return this.state.rptStep
   }
 
   handleLogout = event => {
-    signOutUser()
-    this.userHasAuthenticated(false)
-    this.props.history.push('/login')
+    this.rmReport();
+    signOutUser();
+    this.userHasAuthenticated(false);
+    this.props.history.push('/login');
   }
 
   handleClick = (e, titleProps) => {
@@ -88,6 +92,22 @@ class App extends Component {
     this.setState({ activeIndex: newIndex })
   }
 
+  toggleVisibility = () => {
+    var verticalPane =document.getElementById('verticalPane').parentElement;
+    const { visible } = this.state
+    this.setState({ visible: !this.state.visible })
+     var style; 
+
+    if(visible){
+       var style = `width:0px;`;
+       verticalPane.setAttribute("style",style);
+//      verticalPane.style.width=50;
+    }else{
+       var style = `width:300px;`;
+       verticalPane.setAttribute("style",style);
+//      verticalPane.style.width=200;
+    }
+  }
 
   handleResize = (size) => {
   	/*
@@ -111,7 +131,10 @@ class App extends Component {
       userHasAuthenticated: this.userHasAuthenticated,
       handleLogout: this.handleLogout,
       setRptStep: this.setRptStep,
-      getRptStep: this.getRptStep
+      getRptStep: this.getRptStep,
+      rmReport: this.rmReport,
+      toggleVisibility: this.toggleVisibility,
+      visible: this.state.visible
 
     }
     let rerender = false
@@ -119,26 +142,28 @@ class App extends Component {
       rerender = true
     }
 
-//    <div key={this.state.rptId}>
+    //    <div key={this.state.rptId}>
 
     const { activeIndex, rptId } = this.state
     return (
-      <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
-        <div key='1'>
-          <MyNavBar childProps={childProps} />
+      <SplitPane split='horizontal' allowResize={false} defaultSize={42}>
+        <div key='1' className='container fill mycontainer'>
+          <MyNavBar  childProps={childProps} />
         </div>
-        <SplitPane split='vertical' allowResize={false} defaultSize={200}>
-          <div key='2' >
+        <SplitPane split='vertical' 
+            allowResize={false} 
+            defaultSize={300}
+            >
+          <div key='2' id='verticalPane' className='container fill mycontainer' >
             <MyAccord childProps={childProps} />
           </div>
-          <div key='3' className='container fill' >
+          <div key='3' className='container fill mycontainer' >
             <Routes childProps={childProps} />
-            <div  id='detail' />
+            <div className='mycontainer' id='detail' />
           </div>
         </SplitPane>
 	      </SplitPane>
-      );
-
+    )
   }
 }
 

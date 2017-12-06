@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { Menu } from 'semantic-ui-react'
+import { Menu,Sidebar, Segment, Button, Image, Icon, Header } from 'semantic-ui-react'
 //import { Nav,NavItem,Navbar,Row,Col,Accordion,Panel,ListGroup,ListGroupItem } from "react-bootstrap";
 import "../App.css";
 import Routes from "../Routes";
@@ -17,6 +17,7 @@ class MyNavBar extends Component {
         // This binding is necessary to make `this` work in the callback
     this.handleItemClick = this.handleItemClick.bind(this);
 
+
   }
 
 
@@ -26,35 +27,50 @@ class MyNavBar extends Component {
   }
 
   render() {
-    const { activeItem } = this.state
+    const { activeItem, visible } = this.state
 
     return (
-      <Menu>
-        <Menu.Item
-          name='editorials'
-          active={activeItem === 'editorials'}
-          onClick={this.handleItemClick}
-        >
-          Editorials
-        </Menu.Item>
-
-        <Menu.Item
-          name='reviews'
-          active={activeItem === 'reviews'}
-          onClick={this.handleItemClick}
-        >
-          Reviews
-        </Menu.Item>
-
-        <Menu.Item
-          name='upcomingEvents'
-          active={activeItem === 'upcomingEvents'}
-          onClick={this.handleItemClick}
-        >
-          Upcoming Events
-        </Menu.Item>
+      <div>
+      <Menu class='mycontainer'  inverted>
+        <Menu.Item header>Busche Reporter</Menu.Item>
+         <Menu.Item name='visible' 
+            active={activeItem === 'visible'} 
+            onClick={this.props.childProps.toggleVisibility} >
+            Toggle
+          </Menu.Item>
+         <Menu.Menu position='right'>
+            {this.props.childProps.isAuthenticated ?
+ 
+          <Menu.Item name='logout' 
+            active={activeItem === 'logout'} 
+            onClick={this.props.childProps.handleLogout} >
+            Logout
+          </Menu.Item>
+           :
+            [
+              <Menu.Item name='signup' 
+                active={activeItem === 'signup'} 
+                onClick={(e, { name }) => {
+                  this.props.childProps.rmReport();
+                  this.setState({ activeItem: name });
+                  this.props.history.push("/signup");
+                }} >
+                Signup
+              </Menu.Item>,
+              <Menu.Item name='login' 
+                active={activeItem === 'login'} 
+                onClick={(e, { name }) => {
+                  this.props.rmReport();
+                  this.setState({ activeItem: name });
+                  this.props.history.push("/login");
+                }} >
+                  Login
+              </Menu.Item>
+            ]
+          }
+        </Menu.Menu>
       </Menu>
-
+</div>
 
     );
   }
