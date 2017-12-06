@@ -203,15 +203,126 @@ export default class Home extends React.Component {
       //var dtStart=this.startDate.format('MM-DD-YYYY HH:MM:SS');
       var request2 = {
          template: { 
-              name: 'WorkSumByPlant',
+              name: 'WorkSumTransactions',
           },
-          data:{
-            "dtStart": '',
-            "dtEnd": '',
-            "plantList":",2,3,5,6,"
-          }
+          data: { 
 
-      };
+    "dtStart": "11-1-2017 00:00:00",
+    "dtEnd": "11-28-2017 23:15:10",
+    "partNumber":"2004981",
+    "transactions": [
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    },
+    {
+      "partNumber": "M0009326",
+      "itemNumber": "0003224",
+      "description": "insert",
+      "Plant":"5",
+      "userName":"Bill",
+      "qty":"501",
+      "unitCost":"5.5",
+      "transTime":"01-25-2015 23:15:10"
+    }
+  ]
+}};
 
       request2.data.dtStart = dtStart;
       request2.data.dtEnd = dtEnd;
@@ -245,8 +356,14 @@ export default class Home extends React.Component {
 //display report in placeholder element
 
 
-//jsreport.render(verticalPane, request2);
+jsreport.render('detail', request2);
 
+    } catch (e) {
+      alert(e);
+      this.setState({ isLoading: false });
+    }
+
+/*
       jsreport.renderAsync(request2).then(function(res) {
 
          var detail =document.getElementById('detail');
@@ -273,7 +390,7 @@ export default class Home extends React.Component {
 
           verticalPane.innerHTML = html ;
       });
-
+*/
 /*
           var html = '<html>' +
                   '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
@@ -300,10 +417,6 @@ export default class Home extends React.Component {
               });
       */
 
-    } catch (e) {
-      alert(e);
-      this.setState({ isLoading: false });
-    }
 
   }
 

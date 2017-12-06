@@ -7,7 +7,7 @@ import Routes from './Routes'
 import registerServiceWorker from './registerServiceWorker'
 import SplitPane from 'react-split-pane'
 import { authUser, signOutUser } from './libs/awsLib'
-import './index.css'
+import './App.css'
 import MyNavBar from './containers/MyNavBar'
 import MyAccord from './containers/MyAccord'
 // import { Grid} from "react-bootstrap";
@@ -40,7 +40,7 @@ class App extends Component {
     this.getRptStep = this.getRptStep.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.handleResize = this.handleResize.bind(this)
-    window.onresize = this.handleResize;
+   // window.onresize = this.handleResize;
 
 
   }
@@ -61,7 +61,14 @@ class App extends Component {
   }
 
   setRptStep = rptStep => {
+
+  	if(rptStep===1){
+	    var detail =document.getElementById('detail');
+	    detail.innerHTML = '' ;        
+
+  	}
     this.setState({ rptStep: rptStep })
+
   }
   getRptStep = () => {
     return this.state.rptStep
@@ -81,8 +88,10 @@ class App extends Component {
     this.setState({ activeIndex: newIndex })
   }
 
+
   handleResize = (size) => {
-        var myRpt =document.getElementById('myRpt');
+  	/*
+        var myRpt =document.getElementById('detail');
          if(myRpt!==null){
           var verticalPane =document.getElementById('myRpt').parentElement;
            var height = verticalPane.clientHeight;
@@ -92,6 +101,7 @@ class App extends Component {
            myRpt.setAttribute("style",style);
 
          }
+         */
   }
 
 
@@ -117,7 +127,49 @@ class App extends Component {
         <div key='1'>
           <MyNavBar childProps={childProps} />
         </div>
-        <SplitPane onChange={ this.handleResize } split='vertical' allowResize={false} defaultSize={200}>
+        <SplitPane split='vertical' allowResize={false} defaultSize={200}>
+          <div key='2' >
+            <MyAccord childProps={childProps} />
+          </div>
+          <div key='3' className='container fill' >
+            <Routes childProps={childProps} />
+            <div  id='detail' />
+          </div>
+        </SplitPane>
+	      </SplitPane>
+      );
+
+  }
+}
+
+export default withRouter(App)
+
+/*
+
+      <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
+        <div key='1'>
+          <MyNavBar childProps={childProps} />
+        </div>
+        <SplitPane split='vertical' allowResize={true} defaultSize={200}>
+          <div key='2' >
+            <MyAccord childProps={childProps} />
+          </div>
+	        <SplitPane split='vertical' allowResize={true} defaultSize={200}>
+	          <div key='4' >
+	            <Routes childProps={childProps} />
+	          </div>
+	          <div key='3' className='container fill' >
+	            <div  id='detail' />
+	          </div>
+	        </SplitPane>
+	        </SplitPane>
+	      </SplitPane>
+
+      <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
+        <div key='1'>
+          <MyNavBar childProps={childProps} />
+        </div>
+        <SplitPane onChange={ this.handleResize } split='vertical' allowResize={true} defaultSize={200}>
           <div key='2' >
             <MyAccord childProps={childProps} />
           </div>
@@ -127,13 +179,7 @@ class App extends Component {
           </div>
         </SplitPane>
       </SplitPane>
-      );
-  }
-}
 
-export default withRouter(App)
-
-/*
     <SplitPane split="horizontal" allowResize={false} defaultSize={70}>
         <div key="1">
           <MyNavBar childProps={childProps} />
