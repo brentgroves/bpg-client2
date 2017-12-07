@@ -3,14 +3,15 @@ import { withRouter } from 'react-router-dom'
 import { Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
 // import "./index.css";
 import '../App.css'
-
+import Routes from '../Routes'
 class MyAccord extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       visible: true,
-      activeIndex: 0
+      activeIndex: 0,
+      sidebar: 'production'
     }
 
     this.divStyle = {
@@ -27,10 +28,7 @@ class MyAccord extends Component {
 
 
     this.engReports = (
-      <List  
-        style={this.divStyle} 
-        inverted  divided relaxe
-      >
+      <List inverted  divided relaxed>
         <List.Item onClick={this.handleListItemClick}>
           <List.Icon name='github' size='large' />
           <List.Content>
@@ -43,8 +41,8 @@ class MyAccord extends Component {
   }
 
  toggleVisibility = () => {
-   //    this.setState({ visible: !this.state.visible })
-   this.props.childProps.toggleVisibility()
+   this.setState({ visible: !this.state.visible })
+//   this.props.childProps.toggleVisibility()
  }
 
 
@@ -71,78 +69,68 @@ class MyAccord extends Component {
     const { visible } = this.props.childProps
     // const visible = true;
     let divStyle = {
-      width: '100%'
+      width: '100%',
+      height: '100%',
+      minHeight: '100%',
+//      width: '100%'
     }
     return (
-      <div style={divStyle} className='myAccord'>
-        { this.props.childProps.isAuthenticated
-          ?
-          <Accordion style={divStyle} className='myAccord' as={Menu} vertical inverted >
-            <Menu.Item 
-                style={divStyle} 
-            >
-              <Accordion.Title
-                style={divStyle} 
-                className='myAccord'
-                active={activeIndex === 0}
-                content='Engineering'
-                index={0}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content 
-                style={divStyle} className='myAccord'
-                active={activeIndex === 0} 
-                content={this.engReports} 
-              />
-            </Menu.Item>
-            <Menu.Item>
-              <Accordion.Title
-                active={activeIndex === 1}
-                content='Production'
-                index={1}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content active={activeIndex === 1} content={this.engReports} />
-            </Menu.Item>
-            <Menu.Item>
-              <Accordion.Title
-                active={activeIndex === 2}
-                content='Purchasing'
-                index={2}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content active={activeIndex === 2} content={this.engReports} />
-            </Menu.Item>
-            <Menu.Item>
-              <Accordion.Title
-                active={activeIndex === 3}
-                content='Purchasing'
-                index={3}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content active={activeIndex === 3} content={this.engReports} />
-            </Menu.Item>
-            <Menu.Item>
-              <Accordion.Title
-                active={activeIndex === 4}
-                content='Quality'
-                index={4}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content active={activeIndex === 4} content={this.engReports} />
-            </Menu.Item>
-            <Menu.Item>
-              <Accordion.Title
-                active={activeIndex === 5}
-                content='Sales'
-                index={5}
-                onClick={this.handleClick}
-              />
-              <Accordion.Content active={activeIndex === 5} content={this.engReports} />
-            </Menu.Item>
-          </Accordion>
+      <div style={divStyle} className='mycontainer'>
+       <Menu secondary attached="top">
+        <Menu.Item onClick={() => this.setState({ visible: !this.state.visible })} >
+          <Icon name="sidebar" />Menu
+        </Menu.Item>          
+        <Menu.Item onClick={() => {
+          this.setState({ sidebar: 'production' });
+          this.setState({ visible: true });
+        }}>
+          <Icon name="home"/>Production
+        </Menu.Item>
+        <Menu.Item onClick={() => this.setState({ sidebar: 'purchasing' })}>
+          <Icon name="smile"/>Purchasing
+        </Menu.Item>
 
-          : ''}
+      </Menu>
+      {this.state.sidebar==='production' ?
+        <Sidebar.Pushable as={Segment} attached='bottom'>
+          <Sidebar as={Menu} animation='push' width='thin'  visible={this.state.visible} icon='labeled' vertical inverted>
+            <Menu.Item onClick={() => {
+                this.props.history.push("/tcsbyplant");
+                this.setState({ visible: false });
+
+              }}>
+              <Icon name="home"/>ToolCost
+            </Menu.Item>
+            <Menu.Item onClick={this.handleClick}>
+              <Icon name="block layout"/>Excel
+            </Menu.Item>
+          </Sidebar>
+          <Sidebar.Pusher dimmed={this.state.visible} style={divStyle} >
+            <Segment style={divStyle} basic className='container fill mycontainer'>
+            <Routes childProps={this.props.childProps} />
+            <div id='detail' style={divStyle}  className='container fill mycontainer' />
+            </Segment>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+        :
+        <Sidebar.Pushable as={Segment} attached='bottom'>
+          <Sidebar as={Menu} animation='push' width='thin'  visible={this.state.visible} icon='labeled' vertical inverted>
+            <Menu.Item onClick={this.handleClick}>
+              <Icon name="home"/>ToolCost
+            </Menu.Item>
+            <Menu.Item onClick={this.handleClick}>
+              <Icon name="block layout"/>Excel
+            </Menu.Item>
+          </Sidebar>
+          <Sidebar.Pusher dimmed={this.state.visible} style={divStyle} >
+            <Segment style={divStyle} basic className='container fill mycontainer'>
+            <Routes childProps={this.props.childProps} />
+            <div id='detail' style={divStyle}  className='container fill mycontainer' />
+            </Segment>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+
+      }
       </div>
 
     )
