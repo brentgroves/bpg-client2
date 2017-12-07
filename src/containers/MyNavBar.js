@@ -1,68 +1,66 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { Menu,Sidebar, Segment, Button, Image, Icon, Header } from 'semantic-ui-react'
-//import { Nav,NavItem,Navbar,Row,Col,Accordion,Panel,ListGroup,ListGroupItem } from "react-bootstrap";
-import "../App.css";
-import Routes from "../Routes";
-import RouteNavItem from "../components/RouteNavItem";
-import { authUser, signOutUser } from "../libs/awsLib";
-//import "./index.css";
+import React, { Component } from 'react'
+import { Link, withRouter } from 'react-router-dom'
+import { Menu, Sidebar, Segment, Button, Image, Icon, Header } from 'semantic-ui-react'
+// import { Nav,NavItem,Navbar,Row,Col,Accordion,Panel,ListGroup,ListGroupItem } from "react-bootstrap";
+import '../App.css'
+import Routes from '../Routes'
+import RouteNavItem from '../components/RouteNavItem'
+import { authUser, signOutUser } from '../libs/awsLib'
+// import "./index.css";
 
 class MyNavBar extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-    };
-        // This binding is necessary to make `this` work in the callback
-    this.handleItemClick = this.handleItemClick.bind(this);
-
-
+      activeItem: 0
+    }
+    // This binding is necessary to make `this` work in the callback
+    this.handleItemClick = this.handleItemClick.bind(this)
   }
 
 
   handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name });
-    this.props.history.push("/login");
+    this.setState({ activeItem: name })
+    this.props.history.push('/login')
   }
 
   render() {
-    const { activeItem, visible } = this.state
+    const { activeItem } = this.state
 
     return (
-      <div>
-      <Menu class='mycontainer'  inverted>
+      <Menu class='mycontainer' inverted>
         <Menu.Item header>Busche Reporter</Menu.Item>
-         <Menu.Item name='visible' 
-            active={activeItem === 'visible'} 
-            onClick={this.props.childProps.toggleVisibility} >
+        <Menu.Item name='visible'
+          active={activeItem === 'visible'}
+          onClick={this.props.childProps.toggleVisibility} >
             Toggle
-          </Menu.Item>
-         <Menu.Menu position='right'>
-            {this.props.childProps.isAuthenticated ?
- 
-          <Menu.Item name='logout' 
-            active={activeItem === 'logout'} 
-            onClick={this.props.childProps.handleLogout} >
-            Logout
-          </Menu.Item>
-           :
+        </Menu.Item>
+        <Menu.Menu position='right'>
+            {this.props.childProps.isAuthenticated
+              ?
+            <Menu.Item name='logout'
+              active={activeItem === 'logout'}
+              onClick={this.props.childProps.handleLogout} >
+                Logout
+            </Menu.Item>
+            :
             [
-              <Menu.Item name='signup' 
-                active={activeItem === 'signup'} 
+              <Menu.Item name='signup'
+                active={activeItem === 'signup'}
                 onClick={(e, { name }) => {
-                  this.props.childProps.rmReport();
-                  this.setState({ activeItem: name });
-                  this.props.history.push("/signup");
+                  this.props.childProps.rmReport()
+                  this.setState({ activeItem: name })
+                  this.props.history.push('/signup')
                 }} >
                 Signup
               </Menu.Item>,
-              <Menu.Item name='login' 
-                active={activeItem === 'login'} 
+              <Menu.Item name='login'
+                active={activeItem === 'login'}
                 onClick={(e, { name }) => {
-                  this.props.rmReport();
-                  this.setState({ activeItem: name });
-                  this.props.history.push("/login");
+                  this.props.rmReport()
+                  this.setState({ activeItem: name })
+                  this.props.history.push('/login')
                 }} >
                   Login
               </Menu.Item>
@@ -70,13 +68,12 @@ class MyNavBar extends Component {
           }
         </Menu.Menu>
       </Menu>
-</div>
 
-    );
+    )
   }
 }
 
-export default withRouter(MyNavBar);
+export default withRouter(MyNavBar)
 
 
 /*
