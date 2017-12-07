@@ -29,7 +29,8 @@ class App extends Component {
       activeIndex: 0,
       rptStep: 1,
       rptId: 0,
-      visible:true
+      visible:true,
+      accordianWidth:230
     }
     // This binding is necessary to make `this` work in the callback
     this.handleLogout = this.handleLogout.bind(this)
@@ -103,7 +104,7 @@ class App extends Component {
        verticalPane.setAttribute("style",style);
 //      verticalPane.style.width=50;
     }else{
-       var style = `width:300px;`;
+       var style = `width:${this.accordianWidth}px;`;
        verticalPane.setAttribute("style",style);
 //      verticalPane.style.width=200;
     }
@@ -152,7 +153,7 @@ class App extends Component {
         </div>
         <SplitPane split='vertical' 
             allowResize={false} 
-            defaultSize={300}
+            defaultSize={this.state.accordianWidth}
             >
           <div key='2' id='verticalPane' className='container fill mycontainer' >
             <MyAccord childProps={childProps} />
@@ -170,6 +171,7 @@ class App extends Component {
 export default withRouter(App)
 
 /*
+
 
       <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
         <div key='1'>

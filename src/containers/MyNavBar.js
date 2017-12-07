@@ -58,7 +58,7 @@ class MyNavBar extends Component {
               <Menu.Item name='login'
                 active={activeItem === 'login'}
                 onClick={(e, { name }) => {
-                  this.props.rmReport()
+                  this.props.childProps.rmReport()
                   this.setState({ activeItem: name })
                   this.props.history.push('/login')
                 }} >

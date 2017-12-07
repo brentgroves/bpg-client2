@@ -11,8 +11,13 @@ class MyAccord extends Component {
     this.state = {
       visible: true,
       activeIndex: 0
-
     }
+
+    this.divStyle = {
+      width: '100%'
+    }
+
+
     // This binding is necessary to make `this` work in the callback
     this.toggleVisibility = this.toggleVisibility.bind(this)
 
@@ -22,16 +27,12 @@ class MyAccord extends Component {
 
 
     this.engReports = (
-      <List divided relaxed>
+      <List  
+        style={this.divStyle} 
+        inverted  divided relaxe
+      >
         <List.Item onClick={this.handleListItemClick}>
-          <List.Icon name='github' size='large' verticalAlign='middle' />
-          <List.Content>
-            <List.Header>Tool Cost Summary</List.Header>
-            <List.Description as='a'>Ordered by Plant</List.Description>
-          </List.Content>
-        </List.Item>
-        <List.Item onClick={this.handleListItemClick}>
-          <List.Icon name='github' size='large' verticalAlign='middle' />
+          <List.Icon name='github' size='large' />
           <List.Content>
             <List.Header>Tool Cost Summary</List.Header>
             <List.Description as='a'>Ordered by Plant</List.Description>
@@ -76,15 +77,23 @@ class MyAccord extends Component {
       <div style={divStyle} className='myAccord'>
         { this.props.childProps.isAuthenticated
           ?
-          <Accordion style={divStyle} className='myAccord' as={Menu} vertical >
-            <Menu.Item>
+          <Accordion style={divStyle} className='myAccord' as={Menu} vertical inverted >
+            <Menu.Item 
+                style={divStyle} 
+            >
               <Accordion.Title
+                style={divStyle} 
+                className='myAccord'
                 active={activeIndex === 0}
                 content='Engineering'
                 index={0}
                 onClick={this.handleClick}
               />
-              <Accordion.Content active={activeIndex === 0} content={this.engReports} />
+              <Accordion.Content 
+                style={divStyle} className='myAccord'
+                active={activeIndex === 0} 
+                content={this.engReports} 
+              />
             </Menu.Item>
             <Menu.Item>
               <Accordion.Title
