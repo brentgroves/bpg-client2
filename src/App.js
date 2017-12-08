@@ -22,7 +22,7 @@ class App extends Component {
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
-      activeIndex: 0,
+      activeItem: 0,
       rptStep: 1,
       sidebarvisible: true,
       sidebar: 'production'
@@ -31,8 +31,6 @@ class App extends Component {
 
     // This binding is necessary to make `this` work in the callback
     this.handleLogout = this.handleLogout.bind(this)
-    // This binding is necessary to make `this` work in the callback
-    this.handleClick = this.handleClick.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.setRptStep = this.setRptStep.bind(this)
     // This binding is necessary to make `this` work in the callback
@@ -73,19 +71,11 @@ class App extends Component {
     return this.state.rptStep
   }
 
-  handleLogout = event => {
+  handleLogout = (event) => {
     this.rmReport();
     signOutUser();
     this.userHasAuthenticated(false);
     this.props.history.push('/login');
-  }
-
-  handleClick = (e, titleProps) => {
-    const { index } = titleProps
-    const { activeIndex } = this.state
-    const newIndex = activeIndex === index ? -1 : index
-
-    this.setState({ activeIndex: newIndex })
   }
 
 
@@ -101,7 +91,7 @@ class App extends Component {
 
     }
 
-    const { activeIndex,sidebarVisible } = this.state
+    const { activeItem,sidebarVisible } = this.state
     // const visible = true;
     let divStyle = {
       width: '100%',
@@ -110,61 +100,69 @@ class App extends Component {
 //      width: '100%'
     }
 
-    let rerender = false
-    if (this.state.rptStep === 1) {
-      rerender = true
-    }
-
     return (
       <div style={divStyle} className='mycontainer'>
        <Menu secondary attached="top">
         <Menu.Item 
-            name='menu' 
-            onClick={() => {
-                  
-              this.setState({ sidebarVisible: !this.state.sidebarVisible });
+              name='menu' 
+              active={activeItem === 'menu'}
+              onClick={(e, { name }) => {
               this.setState({ activeItem: name })
-          } >
+              this.setState({ sidebarVisible: !this.state.sidebarVisible });
+          }} >
           <Icon name="sidebar" />Menu
         </Menu.Item>          
-        <Menu.Item onClick={() => {
-
+        <Menu.Item name='production'
+          active={activeItem === 'production'}
+          onClick={(e, { name }) => {
+          this.setState({ activeItem: name })
           this.setState({ sidebar: 'production' });
           this.setState({ sidebarVisible: true });
-        }}>
+          }}>
           <Icon name="home"/>Production
         </Menu.Item>
-        <Menu.Item onClick={() => {
+        <Menu.Item 
+          name='purchasing'          
+          active={activeItem === 'purchasing'}
+          onClick={(e, { name }) => {
+          this.setState({ activeItem: name })
           this.setState({ sidebar: 'purchasing' });
           this.setState({ sidebarVisible: true });
-        }}>
+          }}>
           <Icon name="block layout"/>Purchasing
         </Menu.Item>
 
         <Menu.Menu position='right'>
-            {this.props.childProps.isAuthenticated
+            {childProps.isAuthenticated
               ?
-            <Menu.Item name='logout'
+            <Menu.Item 
+              name='logout'
               active={activeItem === 'logout'}
-              onClick={this.props.childProps.handleLogout} >
+              onClick={(e, { name })=> {
+                this.setState({ activeItem: name })
+                childProps.rmReport()
+                childProps.handleLogout()
+              }}>
                 Logout
             </Menu.Item>
             :
             [
-              <Menu.Item name='signup'
+              <Menu.Item 
+                name='signup'
                 active={activeItem === 'signup'}
                 onClick={(e, { name }) => {
-                  this.props.childProps.rmReport()
                   this.setState({ activeItem: name })
+                  childProps.rmReport()
                   this.props.history.push('/signup')
                 }} >
                 Signup
               </Menu.Item>,
-              <Menu.Item name='login'
+              <Menu.Item 
+                name='login'
                 active={activeItem === 'login'}
                 onClick={(e, { name }) => {
-                  this.props.childProps.rmReport()
                   this.setState({ activeItem: name })
+                  childProps.rmReport()
                   this.props.history.push('/login')
                 }} >
                   Login
