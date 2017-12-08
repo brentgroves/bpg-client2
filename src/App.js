@@ -6,7 +6,7 @@ import { authUser, signOutUser } from './libs/awsLib'
 import './App.css'
 import MyAccord from './containers/MyAccord'
 // import { Grid} from "react-bootstrap";
-import { Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
+import { Message, Dropdown, Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
 
 // import '../sass/main.scss';
 // https://www.npmjs.com/package/react-split-pane
@@ -24,13 +24,15 @@ class App extends Component {
       isAuthenticating: true,
       activeItem: 0,
       rptStep: 1,
-      sidebarvisible: true,
+      sidebarvisible: false,
       sidebar: 'production'
     }
 
 
     // This binding is necessary to make `this` work in the callback
     this.handleLogout = this.handleLogout.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.setSidebarVisible = this.setSidebarVisible.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.setRptStep = this.setRptStep.bind(this)
     // This binding is necessary to make `this` work in the callback
@@ -71,11 +73,21 @@ class App extends Component {
     return this.state.rptStep
   }
 
+  setSidebarVisible = visible => {
+    this.setState({ sidebarVisible: visible })
+  }
+
+  getRptStep = () => {
+    return this.state.rptStep
+  }
+
+
   handleLogout = (event) => {
-    this.rmReport();
-    signOutUser();
-    this.userHasAuthenticated(false);
-    this.props.history.push('/login');
+    this.rmReport()
+    signOutUser()
+    this.userHasAuthenticated(false)
+    this.setState({ sidebarVisible: false })
+    this.props.history.push('/login')
   }
 
 
@@ -87,77 +99,75 @@ class App extends Component {
       setRptStep: this.setRptStep,
       getRptStep: this.getRptStep,
       rmReport: this.rmReport,
-      sidebarVisible: this.sidebarVisible
+      sidebarVisible: this.sidebarVisible,
+      setSidebarVisible: this.setSidebarVisible
 
     }
 
-    const { activeItem,sidebarVisible } = this.state
+    const { activeItem, sidebarVisible } = this.state
     // const visible = true;
     let divStyle = {
       width: '100%',
       height: '100%',
-      minHeight: '100%',
-//      width: '100%'
+      minHeight: '100%'
+      //      width: '100%'
     }
+
+
 
     return (
       <div style={divStyle} className='mycontainer'>
-       <Menu secondary attached="top">
-        <Menu.Item 
-              name='menu' 
-              active={activeItem === 'menu'}
-              onClick={(e, { name }) => {
-              this.setState({ activeItem: name })
-              this.setState({ sidebarVisible: !this.state.sidebarVisible });
-          }} >
-          <Icon name="sidebar" />Menu
-        </Menu.Item>          
-        <Menu.Item name='production'
-          active={activeItem === 'production'}
-          onClick={(e, { name }) => {
-          this.setState({ activeItem: name })
-          this.setState({ sidebar: 'production' });
-          this.setState({ sidebarVisible: true });
-          }}>
-          <Icon name="home"/>Production
-        </Menu.Item>
-        <Menu.Item 
-          name='purchasing'          
-          active={activeItem === 'purchasing'}
-          onClick={(e, { name }) => {
-          this.setState({ activeItem: name })
-          this.setState({ sidebar: 'purchasing' });
-          this.setState({ sidebarVisible: true });
-          }}>
-          <Icon name="block layout"/>Purchasing
-        </Menu.Item>
 
-        <Menu.Menu position='right'>
-            {childProps.isAuthenticated
-              ?
-            <Menu.Item 
-              name='logout'
-              active={activeItem === 'logout'}
-              onClick={(e, { name })=> {
-                this.setState({ activeItem: name })
-                childProps.rmReport()
-                childProps.handleLogout()
-              }}>
-                Logout
-            </Menu.Item>
-            :
+
+        <Menu fluid attached='top'>
+          {this.state.isAuthenticated ?
+            <Dropdown item name='sidebar' icon='sidebar'
+            closeOnChange={true}
+            simple
+              onClick={(e, v) => {
+                this.setState({ sidebarVisible: !this.state.sidebarVisible })
+              }} >
+              <Dropdown.Menu>
+
+                <Dropdown.Item
+                  onFocus={(e, dropdown)=>{
+                  }}
+                  onClick={(e, dropdown) => {
+                    e.stopPropagation()
+                    this.setState({ sidebar: 'production' })
+                    this.setState({ sidebarVisible: true })
+                  }}
+
+
+                >
+                  <span className='text'>Production</span>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onFocus={(e, dropdown)=>{
+                  }}
+                  onClick={(e, dropdown) => {
+                    e.stopPropagation()
+                    this.setState({ sidebar: 'purchasing' })
+                    this.setState({ sidebarVisible: true })
+                  }}
+
+                >
+                  <span className='text'>Purchasing</span>
+                </Dropdown.Item>
+
+              </Dropdown.Menu>
+            </Dropdown>
+            : 
             [
-              <Menu.Item 
+              <Menu.Item
                 name='signup'
-                active={activeItem === 'signup'}
-                onClick={(e, { name }) => {
-                  this.setState({ activeItem: name })
+                onClick={() => {
                   childProps.rmReport()
                   this.props.history.push('/signup')
                 }} >
-                Signup
+                <Icon name='home'/>Signup
               </Menu.Item>,
-              <Menu.Item 
+              <Menu.Item
                 name='login'
                 active={activeItem === 'login'}
                 onClick={(e, { name }) => {
@@ -165,70 +175,86 @@ class App extends Component {
                   childProps.rmReport()
                   this.props.history.push('/login')
                 }} >
-                  Login
+                <Icon name='block layout'/>Login
               </Menu.Item>
             ]
+
           }
-        </Menu.Menu>
+          <Menu.Item
+            onClick={(e, { name })=> {
+              this.props.history.push('/home')
+              this.setState({ sidebarVisible: false })
+            }}>
+            <Icon name='heartbeat'/>
+              <span className='text'>Accuracy</span>
+          </Menu.Item>
+          <Menu.Menu position='right'>
+            {childProps.isAuthenticated
+              ?
+              <Menu.Item
+                onClick={(e, { name })=> {
+                  this.props.history.push('/tcsbyplant')
+                  this.setState({ sidebarVisible: false })
+                }}>
+                <Icon name='block layout'/>
+                  <span className='text'>Logout&nbsp;&nbsp;&nbsp;</span>
+              </Menu.Item>
+              : ''
+            }
+          </Menu.Menu>
+        </Menu>
 
-
-
-      </Menu>
-      {this.state.sidebar==='production' ?
-        <Sidebar.Pushable as={Segment} attached='bottom'>
-          <Sidebar as={Menu} animation='push' width='thin'  visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-            <Menu.Item onClick={() => {
-                this.props.history.push("/tcsbyplant");
-                this.setState({ sidebarVisible: false });
-                this.setRptStep(1);
-
+        {this.state.sidebar === 'production' ?
+          <Sidebar.Pushable as={Segment} attached='bottom'>
+            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-              <Icon name="block layout"/>ToolCost
-            </Menu.Item>
-            <Menu.Item onClick={() => {
-                this.props.history.push("/tcsbyplant");
-                this.setState({ sidebarVisible: false });
-                this.setRptStep(1);
-
+                <Icon name='block layout'/>ToolCost
+              </Menu.Item>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-              <Icon name="home"/>Excel
-            </Menu.Item>
-          </Sidebar>
-          <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-            <Segment style={divStyle} basic className='container fill mycontainer'>
-            <Routes childProps={childProps} />
-            <div id='detail' style={divStyle}  className='container fill mycontainer' />
-            </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-        :
-        <Sidebar.Pushable as={Segment} attached='bottom'>
-          <Sidebar as={Menu} animation='push' width='thin'  visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-            <Menu.Item onClick={() => {
-                this.props.history.push("/tcsbyplant");
-                this.setState({ sidebarVisible: false });
-                this.setRptStep(1);
-
+                <Icon name='home'/>Excel
+              </Menu.Item>
+            </Sidebar>
+            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
+              <Segment style={divStyle} basic className='container fill mycontainer'>
+                <Routes childProps={childProps} />
+                <div id='detail' style={divStyle} className='container fill mycontainer' />
+              </Segment>
+            </Sidebar.Pusher>
+          </Sidebar.Pushable>
+          :
+          <Sidebar.Pushable as={Segment} attached='bottom'>
+            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-              <Icon name="home"/>ToolCost
-            </Menu.Item>
-            <Menu.Item onClick={() => {
-                this.props.history.push("/tcsbyplant");
-                this.setState({ sidebarVisible: false });
-                this.setRptStep(1);
-
+                <Icon name='home'/>ToolCost
+              </Menu.Item>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-              <Icon name="block layout"/>Excel
-            </Menu.Item>
-          </Sidebar>
-          <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-            <Segment style={divStyle} basic className='container fill mycontainer'>
-            <Routes childProps={childProps} />
-            <div id='detail' style={divStyle}  className='container fill mycontainer' />
-            </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      }
+                <Icon name='block layout'/>Excel
+              </Menu.Item>
+            </Sidebar>
+            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
+              <Segment style={divStyle} basic className='container fill mycontainer'>
+                <Routes childProps={childProps} />
+                <div id='detail' style={divStyle} className='container fill mycontainer' />
+              </Segment>
+            </Sidebar.Pusher>
+          </Sidebar.Pushable>
+        }
       </div>
     )
   }
@@ -237,6 +263,66 @@ class App extends Component {
 export default withRouter(App)
 
 /*
+      <Menu fluid borderless inverted  secondary attached='bottom' widths={3}>
+        <Menu.Item name='buy' color='teal' active={activeItem === 'buy'} onClick={this.handleItemClick} />
+        <Menu.Item name='sell' color='teal' active={activeItem === 'sell'} onClick={this.handleItemClick} />
+        <Menu.Item name='rent' color='teal' active={activeItem === 'rent'} onClick={this.handleItemClick} />
+      </Menu>
+*/
+
+/*
+
+        {this.state.sidebar === 'production' ?
+          <Sidebar.Pushable as={Segment} attached='bottom'>
+            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
+              }}>
+                <Icon name='block layout'/>ToolCost
+              </Menu.Item>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
+              }}>
+                <Icon name='home'/>Excel
+              </Menu.Item>
+            </Sidebar>
+            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
+              <Segment style={divStyle} basic className='container fill mycontainer'>
+                <Routes childProps={childProps} />
+                <div id='detail' style={divStyle} className='container fill mycontainer' />
+              </Segment>
+            </Sidebar.Pusher>
+          </Sidebar.Pushable>
+          :
+          <Sidebar.Pushable as={Segment} attached='bottom'>
+            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
+              }}>
+                <Icon name='home'/>ToolCost
+              </Menu.Item>
+              <Menu.Item onClick={() => {
+                this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
+              }}>
+                <Icon name='block layout'/>Excel
+              </Menu.Item>
+            </Sidebar>
+            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
+              <Segment style={divStyle} basic className='container fill mycontainer'>
+                <Routes childProps={childProps} />
+                <div id='detail' style={divStyle} className='container fill mycontainer' />
+              </Segment>
+            </Sidebar.Pusher>
+          </Sidebar.Pushable>
+        }
 
 
       <SplitPane split='horizontal' allowResize={false} defaultSize={40}>

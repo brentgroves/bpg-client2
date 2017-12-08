@@ -11,3 +11,19 @@
 .Home .lander p {
   color: #999;
 }
+.fill { 
+    min-height: 70%;
+    height: 70%;
+}
+.mycontainer {
+padding-right: 0px;
+    padding-left: 0px;
+    margin-right: auto;
+    margin-left: auto; 
+
+    width: 100%;
+    height: 70%;
+    min-height: 70%;
+    display: block;
+
+}
