@@ -9,6 +9,8 @@ import {
   CognitoUser
 } from 'amazon-cognito-identity-js'
 
+let jsreport = require('jsreport-browser-client-dist')
+jsreport.serverUrl = 'http://localhost:5488'
 
 export default class Login extends Component {
   constructor(props) {
@@ -64,8 +66,22 @@ export default class Login extends Component {
     try {
       await this.login(this.state.email, this.state.password)
       this.props.userHasAuthenticated(true)
-      this.props.history.push('/home')
-      this.props.setSidebarVisible(true)
+
+        let request = {
+            template: {
+              name: 'HtmlToBrowserClient'
+            },
+            data: {
+              rptName: 'DashBoard'
+            }
+          }
+
+        // add custom headers to ajax calls
+        jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
+        jsreport.render('detail', request)
+        this.props.setRptStep(2);
+//      this.props.history.push('/home')
+      this.props.setSidebarVisible(false)
     } catch (e) {
       alert(e)
       this.setState({ isLoading: false })

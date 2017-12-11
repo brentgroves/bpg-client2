@@ -190,12 +190,13 @@ export default class Home extends React.Component {
       //https://github.com/tomkp/react-split-pane/issues/52
       let request2 = {
         template: {
-          name: 'WorkSumByPlant'
+          name: 'HtmlToBrowserClient'
         },
         data: {
           dtStart: '11-1-2017 00:00:00',
           dtEnd: '11-28-2017 23:15:10',
-          plantList: ','
+          plantList: ',',
+          rptName: 'WorkSumByPlant'
         }
       }
 

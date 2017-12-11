@@ -14,6 +14,9 @@ import {
 import LoaderButton from "../components/LoaderButton";
 import "./Signup.css";
 
+let jsreport = require('jsreport-browser-client-dist')
+jsreport.serverUrl = 'http://localhost:5488'
+
 export default class Signup extends Component {
   constructor(props) {
     super(props);
@@ -58,6 +61,24 @@ componentDidMount() {
       this.setState({
         newUser: newUser
       });
+
+        let request = {
+            template: {
+              name: 'HtmlToBrowserClient'
+            },
+            data: {
+              rptName: 'DashBoard'
+            }
+          }
+
+        // add custom headers to ajax calls
+        jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
+        jsreport.render('detail', request)
+        this.props.setRptStep(2);
+//      this.props.history.push('/home')
+      this.props.setSidebarVisible(false)
+
+
     } catch (e) {
       alert(e);
     }
