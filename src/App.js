@@ -25,10 +25,11 @@ class App extends Component {
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
-      activeItem: 0,
       rptStep: 2,
       sidebarvisible: false,
-      sidebar: 'production',
+      activeItem: 'sidebar',
+      sbActiveItem: 'tcsbyplant',
+      ddActiveItem: 'production',
       dtStart:'12-6-2017 23:15:10' 
     }
 
@@ -65,7 +66,9 @@ jsreport.headers['Authorization'] = "Basic " + btoa("admin:password");
 jsreport.renderAsync(request).then(function(res) {
   console.log(res);
 let json = res.toString();
-var obj = JSON.parse(json);
+   var t =json.replace(/&quot;/g,'"');
+
+let obj = JSON.parse(t);
   //open in new window
   //window.open(res.toDataURI())
 
@@ -138,12 +141,11 @@ var obj = JSON.parse(json);
       setRptStep: this.setRptStep,
       getRptStep: this.getRptStep,
       rmReport: this.rmReport,
-      sidebarVisible: this.sidebarVisible,
       setSidebarVisible: this.setSidebarVisible
 
     }
 
-    const { activeItem, sidebarVisible,sidebar,rptStep } = this.state
+    const { activeItem, sbActiveItem, ddActiveItem, rptStep } = this.state
     // const visible = true;
     let divStyle = {
       width: '100%',
@@ -158,35 +160,51 @@ var obj = JSON.parse(json);
       <div style={divStyle} className='mycontainer'>
 
 
-        <Menu fluid attached='top'>
+        <Menu fluid inverted attached='top'>
           {this.state.isAuthenticated ?
             [
-            <Menu.Item
-              name='sidebar'
-              onClick={(e, v) => {
-                this.setState({ sidebarVisible: !this.state.sidebarVisible })
-              }} >
-              <Icon name='sidebar'/>
-            </Menu.Item>,
-  <Dropdown 
+               <Menu.Item
+                name='toggleSidebar'
+                active={activeItem === 'toggleSidebar'}
+                onClick={(e, { name })=> {
+                  this.setState({ sidebarVisible: !this.state.sidebarVisible })
+                }}>
+                <Icon name='sidebar'/>
+              </Menu.Item>,
+ <Dropdown 
             icon='folder' item >
     <Dropdown.Menu>
-      <Dropdown.Item text='Production' 
-        onClick={(e, dropdown) => {
-          this.setState({ sidebar: 'production' })
-          this.setState({ sidebarVisible: true })
-        }}
-        />
-      <Dropdown.Item text='Purchasing'
-        onClick={(e, dropdown) => {
-          this.setState({ sidebar: 'purchasing' })
-          this.setState({ sidebarVisible: true })
-        }}
-        />
+                  <Dropdown.Item
+                    name='production'
+                    active={ddActiveItem === 'production'}
+                    onClick={(e, { name }) => {
+                      //  e.stopPropagation()
+                      this.setState({ ddActiveItem: name })
+                      this.setState({ sidebarVisible: true })
+                    }}
+                  >
+                    <span id='ddProduction' className='text'>Production</span>
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    name='purchasing'
+                    active={ddActiveItem === 'purchasing'}
+                    onClick={(e, { name }) => {
+                      //  e.stopPropagation()
+                      this.setState({ ddActiveItem: name })
+                      this.setState({ sidebarVisible: true })
+                    }}
+                  >
+                    <span id='ddPurchasing' className='text'>Purchasing</span>
+                  </Dropdown.Item>
     </Dropdown.Menu>
   </Dropdown>,
-          <Menu.Item
+              <Menu.Item
+                name='accuracy'
+                active={activeItem === 'accuracy'}
             onClick={(e, { name })=> {
+                  this.setState({ activeItem: name })
+                  this.setState({ sidebarVisible: false })
+
     try {
 
               let request = {
@@ -211,10 +229,11 @@ var obj = JSON.parse(json);
               <span className='text'>Accuracy</span>
           </Menu.Item>,
           <Menu.Menu position='right'>
-            {childProps.isAuthenticated
-              ?
               <Menu.Item
+                name='logout'
+                active={activeItem === 'logout'}
                 onClick={(e, { name })=> {
+                  this.setState({ activeItem: name })
                   this.setRptStep(1)
                   this.setState({ sidebarVisible: false })
                   childProps.rmReport()
@@ -223,20 +242,20 @@ var obj = JSON.parse(json);
                 <Icon name='block layout'/>
                   <span className='text'>Logout&nbsp;&nbsp;&nbsp;</span>
               </Menu.Item>
-              : ''
-            }
           </Menu.Menu>
           ]
             : 
             [
               <Menu.Item
                 name='signup'
-                onClick={() => {
+                active={activeItem === 'signup'}
+                onClick={(e, { name }) => {
+                  this.setState({ activeItem: name })
                   this.setRptStep(1)
                   childProps.rmReport()
                   this.props.history.push('/signup')
                 }} >
-                <Icon name='home'/>Signup
+                <Icon name='add user'/>Signup
               </Menu.Item>,
               <Menu.Item
                 name='login'
@@ -247,7 +266,7 @@ var obj = JSON.parse(json);
                   childProps.rmReport()
                   this.props.history.push('/login')
                 }} >
-                <Icon name='block layout'/>Login
+                <Icon name='mail forward'/>Login
               </Menu.Item>
             ]
 
@@ -255,22 +274,31 @@ var obj = JSON.parse(json);
                   </Menu>
 
 
-        {this.state.sidebar === 'production' ?
+        {this.state.ddActiveItem === 'production' ?
           <Sidebar.Pushable as={Segment} attached='bottom'>
             <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item onClick={() => {
+              <Menu.Item 
+                name='tcsbyplant'
+                active={activeItem === 'tcsbyplant'}
+                onClick={(e, { name }) => {
+                  this.setState({ sbActiveItem: name })
                 this.setRptStep(1)
                 this.props.history.push('/tcsbyplant')
                 this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-                <Icon name='block layout'/>ToolCost
+                <Icon name='html5'/>ToolCost
               </Menu.Item>
-              <Menu.Item onClick={() => {
+              <Menu.Item 
+                name='tcsbyplantXLS'
+                active={activeItem === 'tcsbyplantXLS'}
+                onClick={(e, { name }) => {
+                  this.setState({ sbActiveItem: name })
                 this.setRptStep(1)
                 this.props.history.push('/tcsbyplant')
                 this.setState({ sidebarVisible: false })
               }}>
-                <Icon name='home'/>Excel
+                <Icon name='file excel outline'/>Excel
               </Menu.Item>
             </Sidebar>
             <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
@@ -286,20 +314,30 @@ var obj = JSON.parse(json);
           :
           <Sidebar.Pushable as={Segment} attached='bottom'>
             <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item onClick={() => {
+              <Menu.Item 
+                name='tcsbyplantXLS'
+                active={activeItem === 'tcsbyplantXLS'}
+                onClick={(e, { name }) => {
+                  this.setState({ sbActiveItem: name })
                 this.setRptStep(1)
-                this.setState({ sidebarVisible: false })
                 this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
               }}>
-                <Icon name='home'/>ToolCost
+                <Icon name='file excel outline'/>Excel
               </Menu.Item>
-              <Menu.Item onClick={() => {
+              <Menu.Item 
+                name='tcsbyplant'
+                active={activeItem === 'tcsbyplant'}
+                onClick={(e, { name }) => {
+                  this.setState({ sbActiveItem: name })
                 this.setRptStep(1)
-                this.setState({ sidebarVisible: false })
                 this.props.history.push('/tcsbyplant')
+                this.setState({ sidebarVisible: false })
+                this.setRptStep(1)
               }}>
-                <Icon name='block layout'/>Excel
+                <Icon name='html5'/>ToolCost
               </Menu.Item>
+
             </Sidebar>
             <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
               <Segment style={divStyle} basic className='container fill mycontainer'>

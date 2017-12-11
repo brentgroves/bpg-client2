@@ -79,6 +79,7 @@ export default class Login extends Component {
         // add custom headers to ajax calls
         jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
         jsreport.render('detail', request)
+        this.props.rmReport();
         this.props.setRptStep(2);
 //      this.props.history.push('/home')
       this.props.setSidebarVisible(false)
