@@ -56,15 +56,20 @@ export default class Home extends Component {
     return (
       [
 <Segment >
+
 <Grid >
     <Grid.Row >
       <Grid.Column width={4} />
       <Grid.Column  width={8}>
       <Segment>
-<Grid.Row>
-    <Icon size='huge' name='settings' />
-    <h1 className='lander' >Busche Reporter</h1>
-    </Grid.Row>
+<div className="ui inverted teal vertical segment">
+    <div className="ui page grid">
+      <div className="column">
+        <h2 className="ui inverted header">Full Width Background</h2>
+        <p>First section of content</p>
+      </div>
+    </div>
+</div>
   </Segment>
       </Grid.Column>
       <Grid.Column width={4} />
