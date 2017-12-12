@@ -5,6 +5,7 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^1.21.0",
     "dateformat": "^3.0.2",
+    "iframe": "^1.0.0",
     "jsreport-browser-client-dist": "^1.0.4",
     "moment": "^2.19.2",
     "react": "^16.0.0",

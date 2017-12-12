@@ -7,10 +7,8 @@ import './App.css'
 import MyAccord from './containers/MyAccord'
 // import { Grid} from "react-bootstrap";
 import { Message, Dropdown, Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
-
 let jsreport = require('jsreport-browser-client-dist')
 jsreport.serverUrl = 'http://localhost:5488'
-
 // import '../sass/main.scss';
 // https://www.npmjs.com/package/react-split-pane
 
@@ -19,20 +17,22 @@ jsreport.serverUrl = 'http://localhost:5488'
 
 
 class App extends Component {
+
+
   constructor(props) {
     super(props)
 
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
-      rptStep: 2,
+      rptStep: 1,
       sidebarvisible: false,
       activeItem: 'sidebar',
       sbActiveItem: 'tcsbyplant',
       ddActiveItem: 'production',
-      dtStart:'12-6-2017 23:15:10' 
+      dtStart:'12-6-2017 23:15:10' ,
+      js:jsreport
     }
-
 
     // This binding is necessary to make `this` work in the callback
     this.handleLogout = this.handleLogout.bind(this)
@@ -45,12 +45,19 @@ class App extends Component {
     // This binding is necessary to make `this` work in the callback
     this.rmReport = this.rmReport.bind(this)
     // window.onresize = this.handleResize;
+
   }
+
+
   async componentDidMount() {
     try {
       if (await authUser()) {
         this.userHasAuthenticated(true);
+    var self = this;
+//var renderAsync = jsreport.renderAsync;
+//varr renderAsyncBind = Function.prototype.apply.bind(renderAsync);    
 
+    // This binding is necessary to make `this` work in the callback
 jsreport.headers['Authorization'] = "Basic " + btoa("admin:password");
 
         let request = {
@@ -64,11 +71,12 @@ jsreport.headers['Authorization'] = "Basic " + btoa("admin:password");
 
 //render through AJAX request and return promise with array buffer response
 jsreport.renderAsync(request).then(function(res) {
+     // This binding is necessary to make `this` work in the callback
+    var self2 = self; 
   console.log(res);
-let json = res.toString();
-   var t =json.replace(/&quot;/g,'"');
-
-let obj = JSON.parse(t);
+  let json = res.toString();
+  var t =json.replace(/&quot;/g,'"');
+  let obj = JSON.parse(t);
   //open in new window
   //window.open(res.toDataURI())
 
@@ -83,8 +91,25 @@ let obj = JSON.parse(t);
 
         // add custom headers to ajax calls
         jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
-        jsreport.render('detail', request2)
-  });
+//        jsreport.render('detail', request2)
+/*
+      jsreport.renderAsync(request2).then(function(res) {
+        var self3 = self2;
+    // This binding is necessary to make `this` work in the callback
+        self3.setRptStep(2);
+         var detail =document.getElementById('detail');
+
+          var html = '<html>' +
+                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
+                  '<body>' +                                
+                  '<iframe id="myRpt" src="' +  res.toDataURI() + '"></iframe>' +
+                  '</body></html>';
+
+          detail.innerHTML = html;
+        });
+      });
+      */
+});
 }
     } catch (e) {
       alert(e)
@@ -94,6 +119,8 @@ let obj = JSON.parse(t);
 };
 
 
+// jsreport = require('jsreport-browser-client-dist')
+//jsreport.serverUrl = 'http://localhost:5488'
 
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated })

@@ -14,7 +14,6 @@ export default ({ childProps }) =>
     component={ childProps.isAuthenticated ? Home : Home } 
     props={childProps} />
     <AppliedRoute path="/home" exact component={Home} props={childProps} />
-
     <AppliedRoute path="/login" exact component={Login} props={childProps} />
 	<AppliedRoute path="/signup" exact component={Signup} props={childProps} />
 	<AppliedRoute path="/tcsbyplant" exact component={ToolCostSummaryByPlant} props={childProps} />

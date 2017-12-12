@@ -6,9 +6,12 @@ import momentLocalizer from 'react-widgets-moment'
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import LoaderButton from '../components/LoaderButton'
 import MyReport from './MyReport'
-// var jsreport = require("jsreport-client")('http://localhost:5488', 'admin', 'password')
 let jsreport = require('jsreport-browser-client-dist')
 jsreport.serverUrl = 'http://localhost:5488'
+
+let iframe = require('iframe')
+
+// var jsreport = require("jsreport-client")('http://localhost:5488', 'admin', 'password')
 
 
 // const jsreport = 'http://jsreport-server:5488'
@@ -160,8 +163,7 @@ export default class Home extends React.Component {
 
   handleSubmit = async event => {
     event.preventDefault()
-
-    //   this.setState({ isLoading: true });
+    this.setState({ isLoading: true })
     try {
       // add custom headers to ajax calls
       jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
@@ -187,7 +189,7 @@ export default class Home extends React.Component {
       // var dtStart=this.startDate.format('MM-DD-YYYY HH:MM:SS');
       //
       //
-      //https://github.com/tomkp/react-split-pane/issues/52
+      // https://github.com/tomkp/react-split-pane/issues/52
       let request2 = {
         template: {
           name: 'HtmlToBrowserClient'
@@ -200,124 +202,6 @@ export default class Home extends React.Component {
         }
       }
 
-      /*
-    "dtStart": "11-1-2017 00:00:00",
-    "dtEnd": "11-28-2017 23:15:10",
-    "partNumber":"2004981",
-    "transactions": [
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    },
-    {
-      "partNumber": "M0009326",
-      "itemNumber": "0003224",
-      "description": "insert",
-      "Plant":"5",
-      "userName":"Bill",
-      "qty":"501",
-      "unitCost":"5.5",
-      "transTime":"01-25-2015 23:15:10"
-    }
-  ]
-}};
-*/
       request2.data.dtStart = dtStart
       request2.data.dtEnd = dtEnd
       request2.data.plantList = ','
@@ -345,86 +229,26 @@ export default class Home extends React.Component {
       if (this.state.plt11Checked === true) {
         request2.data.plantList += '11,'
       }
-      //      this.props.history.push("/myreport");
 
-      //      jsreport.render('detail', request2);
-      this.props.setRptStep(2)
-      /*
-     var detail =document.getElementById('detail');
-     var divContainer;
-     var verticalPane;
-     if(detail===null){
-        divContainer = detail.parentElement;
-        verticalPane = divContainer.parentElement;
 
-     }else{
-        verticalPane =document.getElementById('myRpt').parentElement;
-
-     }
-     */
-      //     splitPane.addEventListener("resize", this.handleOnResize);
-      // display report in placeholder element
-
+      let self = this
 
       jsreport.render('detail', request2)
+
+      setTimeout(function () {
+        //        self.props.setRptStep(2); 
+        let detail = document.getElementById('detail')
+        let childNodes = detail.childNodes
+        if (childNodes.length !== 0) {
+          self.setState({ isLoading: false })
+
+          self.props.setRptStep(2)
+        }
+      }, 3000)
     } catch (e) {
       alert(e)
       this.setState({ isLoading: false })
     }
-
-    /*
-      jsreport.renderAsync(request2).then(function(res) {
-
-         var detail =document.getElementById('detail');
-         var divContainer;
-         var verticalPane;
-         var splitPane;
-         if(detail!==null){
-            divContainer = detail.parentElement;
-            verticalPane = divContainer.parentElement;
-           // splitPane = verticalPane.parentElement;
-         }else{
-            verticalPane =document.getElementById('myRpt').parentElement;
-         }
-         var paneHeight = verticalPane.clientHeight;
-         var paneWidth = verticalPane.clientWidth;
-
-
-          var html = '<html>' +
-                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
-                  '<body>' + 
-
-          '<iframe id="myRpt" style="height:' + paneHeight + 'px;width:' + paneWidth + 'px;" src="' +  res.toDataURI() + '"></iframe>' +
-                  '</body></html>';
-
-          verticalPane.innerHTML = html ;
-      });
-*/
-    /*
-          var html = '<html>' +
-                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
-                  '<body>' +                                
-                  '<iframe id="myRpt" src="' +  res.toDataURI() + '"></iframe>' +
-                  '</body></html>';
-          verticalPane.innerHTML = html ;
-         // var height=  detail.clientHeight;
-
- //  iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
- //   iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-
-//https://forum.jsreport.net/topic/326/getting-html-from-html-with-browser-client/3
-//      jsreport.render('_blank', request2);
-              jsreport.render({ 
-                  template: { 
-                      name: 'WorkSumTransactions',
-                  },
-                  data:{
-                    "dtStart": "01-1-2017 00:00:00",
-                    "dtEnd": "01-12-2017 23:15:10",
-                    "partNumber":"M0009326"
-                  }
-              });
-      */
   }
 
   handleOnResize = (event) => {
