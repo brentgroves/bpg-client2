@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, FormControl, ControlLabel, Panel, Row, Col, Checkbox } from 'react-bootstrap'
+import { FormGroup, FormControl, ControlLabel, Panel, Grid,Row, Col, Checkbox } from 'react-bootstrap'
 import 'react-widgets/dist/css/react-widgets.css'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment'
@@ -9,7 +9,7 @@ import MyReport from './MyReport'
 let jsreport = require('jsreport-browser-client-dist')
 jsreport.serverUrl = 'http://localhost:5488'
 
-let iframe = require('iframe')
+
 
 // var jsreport = require("jsreport-client")('http://localhost:5488', 'admin', 'password')
 
@@ -86,6 +86,7 @@ export default class Home extends React.Component {
       counter: this.state.counter + 1
     }))
   }
+
 
   validateForm() {
     return ((this.validateDate() === 'success') && (this.validatePlantList() === 'success'))
@@ -331,6 +332,15 @@ export default class Home extends React.Component {
   /* Nancy for year */
 
   render() {
+    let headerStyle = {
+      width: '100%',
+      height: '100%',
+padding:'20px !important',
+margin:'0px !important',
+
+background: 'grey'      
+      //      width: '100%'
+    }
     let dateHeader
     let dateStyle
     if (this.validateDate()) {
@@ -351,6 +361,15 @@ export default class Home extends React.Component {
     if (this.props.getRptStep() === 1) {
       myForm =
         (<form onSubmit={this.handleSubmit}>
+        <Grid>
+          <Row>
+            <Col xs={2} />
+            <Col xs={8} >
+            &nbsp;<br />&nbsp;
+
+            </Col>
+            <Col xs={2} />
+          </Row>  
           <Row>
             <Col xs={2} />
             <Col xs={8} style={{}}>
@@ -466,6 +485,7 @@ export default class Home extends React.Component {
             </Col>
             <Col xs={5}>&nbsp;</Col>
           </Row>
+          </Grid>
         </form>)
     } else {
       myForm = ''
@@ -482,27 +502,3 @@ export default class Home extends React.Component {
 }
 
 
-/*
-    <div id="rpt2" width="400" height="800"></div>
-
-       <iframe   id="rpt2" width="400" height="200" />
-
-            <div>
-                <ExampleContainer content={content + counter} stylesheets={styles} />
-                <button onClick={this.increaseCounter}>InreaseCounter</button>
-            </div>
-
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="startDate" validationState={this.validateStartDate()}  bsSize="large">
-            <ControlLabel>Start</ControlLabel>
-              <DateTime isValidDate={ this.validDate } closeOnSelect='true' onChange={this.handleStartDateChange} />
-          <FormControl.Feedback />
-          </FormGroup>
-          <FormGroup controlId="endDate" validationState={this.validateEndDate()}  bsSize="large">
-            <ControlLabel>End</ControlLabel>
-              <DateTime isValidDate={ this.validDate } closeOnSelect='true' onChange={this.handleEndDateChange} />
-          <FormControl.Feedback />
-          </FormGroup>
-
-        </form>
-*/

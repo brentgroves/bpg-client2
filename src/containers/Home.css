@@ -1,16 +1,4 @@
-.Home .lander {
-  padding: 60px 0;
-  text-align: center;
-}
 
-.Home .lander h1 {
-  font-family: "Open Sans", sans-serif;
-  font-weight: 600;
-}
-
-.Home .lander p {
-  color: #999;
-}
 .fill { 
     min-height: 70%;
     height: 70%;
@@ -28,6 +16,7 @@ padding-right: 0px;
 
 }
 
-.lander {
-  text-align: center;
+.mygrey {
+background: 'grey'    
+
 }

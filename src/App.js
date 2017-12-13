@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Link, withRouter } from 'react-router-dom'
 import Routes from './Routes'
 import { authUser, signOutUser } from './libs/awsLib'
-import './App.css'
+//import './App.css'
 import MyAccord from './containers/MyAccord'
 // import { Grid} from "react-bootstrap";
 import { Message, Dropdown, Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
@@ -174,14 +174,25 @@ jsreport.renderAsync(request).then(function(res) {
 
     const { activeItem, sbActiveItem, ddActiveItem, rptStep } = this.state
     // const visible = true;
+ /*
     let divStyle = {
       width: '100%',
       height: '100%',
       minHeight: '100%'
       //      width: '100%'
     }
+*/
+    let divStyle = {
+      width: '100%',
+      height: '100%',
+padding:'0px !important',
+margin:'0px !important',
 
+//margin:'0px 0px 0x 0px'
+//margin:'10px 5px 15px 20px'
 
+      //      width: '100%'
+    }
 
     return (
       <div style={divStyle} className='mycontainer'>
@@ -302,8 +313,8 @@ jsreport.renderAsync(request).then(function(res) {
 
 
         {this.state.ddActiveItem === 'production' ?
-          <Sidebar.Pushable as={Segment} attached='bottom'>
-            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+          <Sidebar.Pushable as={Segment}  attached='bottom'>
+            <Sidebar as={Menu} animation='push'  width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
               <Menu.Item 
                 name='tcsbyplant'
                 active={activeItem === 'tcsbyplant'}
@@ -329,18 +340,16 @@ jsreport.renderAsync(request).then(function(res) {
               </Menu.Item>
             </Sidebar>
             <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-              <Segment style={divStyle} basic className='container fill mycontainer'>
         {rptStep === 1 ?
                 <Routes childProps={childProps} />
                 : ''
               }
                 <div id='detail' style={divStyle} className='container fill mycontainer' />
-              </Segment>
             </Sidebar.Pusher>
           </Sidebar.Pushable>
           :
-          <Sidebar.Pushable as={Segment} attached='bottom'>
-            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+          <Sidebar.Pushable as={Segment} style={divStyle} attached='bottom'>
+            <Sidebar as={Menu} style={divStyle} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
               <Menu.Item 
                 name='tcsbyplantXLS'
                 active={activeItem === 'tcsbyplantXLS'}
@@ -367,7 +376,7 @@ jsreport.renderAsync(request).then(function(res) {
 
             </Sidebar>
             <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-              <Segment style={divStyle} basic className='container fill mycontainer'>
+              <Segment style={divStyle} basic >
                 <Routes childProps={childProps} />
                 <div id='detail' style={divStyle} className='container fill mycontainer' />
               </Segment>
