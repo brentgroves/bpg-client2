@@ -1,5 +1,7 @@
 import React from 'react'
-import { FormGroup, FormControl, ControlLabel, Panel, Grid,Row, Col, Checkbox } from 'react-bootstrap'
+import { Link, withRouter } from 'react-router-dom'
+import {  Grid,Container, Segment, Rail, Menu, Header, Icon } from 'semantic-ui-react'
+import { Button, Form, Message } from 'semantic-ui-react'
 import 'react-widgets/dist/css/react-widgets.css'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment'
@@ -11,36 +13,14 @@ jsreport.serverUrl = 'http://localhost:5488'
 
 
 
-// var jsreport = require("jsreport-client")('http://localhost:5488', 'admin', 'password')
-
-
-// const jsreport = 'http://jsreport-server:5488'
-
-
 Moment.locale('en')
 momentLocalizer()
 
 
-export default class Home extends React.Component {
+class ToolCostSummaryByPlant extends React.Component {
   constructor(props) {
     super(props)
 
-    /*
-
-
-    var startDate = new Moment();
-    moment().startOf('month');
-    startDate.add(1,'days');
-
-{
-  "dtStart": "01-1-2017 00:00:00",
-  "dtEnd": "01-12-2017 23:15:10",
-  "plantList":",2,3,5,6,"
-
-}
-
-    */
-    //    var  defStartDate = mmtStart.toDate(); 
     this.state = {
       isLoading: false,
       step: 1,
@@ -78,6 +58,9 @@ export default class Home extends React.Component {
     this.plt9Change = this.plt9Change.bind(this)
     this.plt11Change = this.plt11Change.bind(this)
   }
+
+  
+
   /**
      * Set a new state with an increased counter
      */
@@ -332,13 +315,70 @@ export default class Home extends React.Component {
   /* Nancy for year */
 
   render() {
+    let divStyle = {
+      width: '90%',
+      height: '100%',
+      minHeight: '100%'
+      //      width: '100%'
+    }
+    return (
+
+  <Grid >
+
+    <Grid.Row>
+      <Grid.Column width={3}>
+      </Grid.Column>
+      <Grid.Column width={10}>
+                    &nbsp;<br />&nbsp;
+
+        <Segment>
+          <Header as='h2'>
+            <Icon name='plug' />
+            <Header.Content>
+              Tool Cost Summary
+            </Header.Content>
+          </Header>      
+          <p><strong>Description:</strong>{' '}This report sums all of the issues from the tool bosses and crib for a part number for a specified date range and department(s).  It also displays the current M2M Job Number, pieces produced, value added sales, total and cunsumable tool costs as well as a Tool Cost / Value Add Sales percentage.</p>
+          <p><strong>Start:</strong>{' '} </p>
+                        <DateTimePicker
+                          onChange={this.handleStartDateChange}
+                          defaultValue={ this.state.defStartDate}
+                        />
+          <p><strong>End:</strong>{' '} </p>
+
+                        <DateTimePicker
+                          onChange={this.handleEndDateChange}
+                          defaultValue={this.state.defEndDate}
+                        />
+      <Form >
+  
+</Form>
+
+        </Segment>
+      </Grid.Column>
+      <Grid.Column width={3}>
+      </Grid.Column>
+    </Grid.Row>
+
+
+  </Grid>
+
+
+      )
+  }
+}
+
+export default withRouter(ToolCostSummaryByPlant);
+
+
+ /*   
     let headerStyle = {
       width: '100%',
       height: '100%',
-padding:'20px !important',
-margin:'0px !important',
+      padding: '20px !important',
+      margin: '0px !important',
 
-background: 'grey'      
+      background: 'grey'
       //      width: '100%'
     }
     let dateHeader
@@ -361,130 +401,130 @@ background: 'grey'
     if (this.props.getRptStep() === 1) {
       myForm =
         (<form onSubmit={this.handleSubmit}>
-        <Grid>
-          <Row>
-            <Col xs={2} />
-            <Col xs={8} >
+          <Grid>
+            <Row>
+              <Col xs={2} />
+              <Col xs={8} >
             &nbsp;<br />&nbsp;
 
-            </Col>
-            <Col xs={2} />
-          </Row>  
-          <Row>
-            <Col xs={2} />
-            <Col xs={8} style={{}}>
+              </Col>
+              <Col xs={2} />
+            </Row>
+            <Row>
+              <Col xs={2} />
+              <Col xs={8} style={{}}>
 
-              <Panel className='ToolCostSummaryByPlant' bsStyle={dateStyle} header={dateHeader}>
-                <FormGroup controlId='startDate' validationState={this.validateDate()} bsSize='large'>
-                  <ControlLabel>Start</ControlLabel>
-                  <Row>
-                    <Col xs={11} style={{}}>
-                      <DateTimePicker
-                        onChange={this.handleStartDateChange}
-                        defaultValue={ this.state.defStartDate}
-                      />
-                    </Col>
-                    <Col xs={1} >
-                      <FormControl.Feedback />
-                    </Col>
-                  </Row>
-                </FormGroup>
-                <FormGroup controlId='endDate' validationState={this.validateDate()} bsSize='large'>
-                  <ControlLabel>End</ControlLabel>
-                  <Row>
-                    <Col xs={11} style={{}}>
-                      <DateTimePicker
-                        onChange={this.handleEndDateChange}
-                        defaultValue={this.state.defEndDate}
-                      />
-                    </Col>
-                    <Col xs={1} >
-                      <FormControl.Feedback />
-                    </Col>
-                  </Row>
-                </FormGroup>
-              </Panel>
-            </Col>
-            <Col xs={1} />
-          </Row>
-          <Row>
-            <Col xs={2} />
-            <Col xs={8} style={{}}>
-              <Panel className='ToolCostSummaryByPlant' bsStyle={plantStyle} header={plantHeader}>
-                <FormGroup controlId='plt2Checked' >
-                  <Checkbox inline
-                    checked={this.state.plt2Checked}
-                    onChange={this.plt2Change} >
+                <Panel className='ToolCostSummaryByPlant' bsStyle={dateStyle} header={dateHeader}>
+                  <FormGroup controlId='startDate' validationState={this.validateDate()} bsSize='large'>
+                    <ControlLabel>Start</ControlLabel>
+                    <Row>
+                      <Col xs={11} style={{}}>
+                        <DateTimePicker
+                          onChange={this.handleStartDateChange}
+                          defaultValue={ this.state.defStartDate}
+                        />
+                      </Col>
+                      <Col xs={1} >
+                        <FormControl.Feedback />
+                      </Col>
+                    </Row>
+                  </FormGroup>
+                  <FormGroup controlId='endDate' validationState={this.validateDate()} bsSize='large'>
+                    <ControlLabel>End</ControlLabel>
+                    <Row>
+                      <Col xs={11} style={{}}>
+                        <DateTimePicker
+                          onChange={this.handleEndDateChange}
+                          defaultValue={this.state.defEndDate}
+                        />
+                      </Col>
+                      <Col xs={1} >
+                        <FormControl.Feedback />
+                      </Col>
+                    </Row>
+                  </FormGroup>
+                </Panel>
+              </Col>
+              <Col xs={1} />
+            </Row>
+            <Row>
+              <Col xs={2} />
+              <Col xs={8} style={{}}>
+                <Panel className='ToolCostSummaryByPlant' bsStyle={plantStyle} header={plantHeader}>
+                  <FormGroup controlId='plt2Checked' >
+                    <Checkbox inline
+                      checked={this.state.plt2Checked}
+                      onChange={this.plt2Change} >
                     2
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt3Checked}
-                    onChange={this.plt3Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt3Checked}
+                      onChange={this.plt3Change} >
                     3
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt5Checked}
-                    onChange={this.plt5Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt5Checked}
+                      onChange={this.plt5Change} >
                     5
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt6Checked}
-                    onChange={this.plt6Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt6Checked}
+                      onChange={this.plt6Change} >
                     6
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt7Checked}
-                    onChange={this.plt7Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt7Checked}
+                      onChange={this.plt7Change} >
                     7
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt8Checked}
-                    onChange={this.plt8Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt8Checked}
+                      onChange={this.plt8Change} >
                     8
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt9Checked}
-                    onChange={this.plt9Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt9Checked}
+                      onChange={this.plt9Change} >
                     9
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt11Checked}
-                    onChange={this.plt11Change} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt11Checked}
+                      onChange={this.plt11Change} >
                     11
-                  </Checkbox>
-                  {' '}
-                  <Checkbox inline
-                    checked={this.state.plt11Checked}
-                    onChange={this.pltAllChange} >
+                    </Checkbox>
+                    {' '}
+                    <Checkbox inline
+                      checked={this.state.plt11Checked}
+                      onChange={this.pltAllChange} >
                     All
-                  </Checkbox>
-                </FormGroup>
-              </Panel>
-            </Col>
-            <Col xs={2} />
-          </Row>
-          <Row>
-            <Col xs={5} >&nbsp;</Col>
-            <Col xs={2}>
-              <LoaderButton
-                block
-                bsSize='large'
-                disabled={!this.validateForm()}
-                type='submit'
-                isLoading={this.state.isLoading}
-                text='Run'
-                loadingText='Running…'
-              />
-            </Col>
-            <Col xs={5}>&nbsp;</Col>
-          </Row>
+                    </Checkbox>
+                  </FormGroup>
+                </Panel>
+              </Col>
+              <Col xs={2} />
+            </Row>
+            <Row>
+              <Col xs={5} >&nbsp;</Col>
+              <Col xs={2}>
+                <LoaderButton
+                  block
+                  bsSize='large'
+                  disabled={!this.validateForm()}
+                  type='submit'
+                  isLoading={this.state.isLoading}
+                  text='Run'
+                  loadingText='Running…'
+                />
+              </Col>
+              <Col xs={5}>&nbsp;</Col>
+            </Row>
           </Grid>
         </form>)
     } else {
@@ -499,6 +539,4 @@ background: 'grey'
       </div>
     )
   }
-}
-
-
+*/  

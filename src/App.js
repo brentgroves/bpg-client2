@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Link, withRouter } from 'react-router-dom'
 import Routes from './Routes'
 import { authUser, signOutUser } from './libs/awsLib'
-//import './App.css'
+// import './App.css'
 import MyAccord from './containers/MyAccord'
 // import { Grid} from "react-bootstrap";
 import { Message, Dropdown, Sidebar, Segment, Button, Image, Header, Accordion, Icon, List, Menu } from 'semantic-ui-react'
@@ -17,8 +17,6 @@ jsreport.serverUrl = 'http://localhost:5488'
 
 
 class App extends Component {
-
-
   constructor(props) {
     super(props)
 
@@ -30,8 +28,8 @@ class App extends Component {
       activeItem: 'sidebar',
       sbActiveItem: 'tcsbyplant',
       ddActiveItem: 'production',
-      dtStart:'12-6-2017 23:15:10' ,
-      js:jsreport
+      dtStart: '12-6-2017 23:15:10',
+      js: jsreport
     }
 
     // This binding is necessary to make `this` work in the callback
@@ -45,42 +43,44 @@ class App extends Component {
     // This binding is necessary to make `this` work in the callback
     this.rmReport = this.rmReport.bind(this)
     // window.onresize = this.handleResize;
-
   }
 
 
   async componentDidMount() {
     try {
-      if (await authUser()) {
-        this.userHasAuthenticated(true);
-    var self = this;
-//var renderAsync = jsreport.renderAsync;
-//varr renderAsyncBind = Function.prototype.apply.bind(renderAsync);    
 
-    // This binding is necessary to make `this` work in the callback
-jsreport.headers['Authorization'] = "Basic " + btoa("admin:password");
+/*
+      let email = document.getElementById("email");
+      let password = document.getElementById("password");
+      this.setState({
+        email
+      });
+
+      if (await authUser()) {
+        this.userHasAuthenticated(true)
+        let self = this
+        // This binding is necessary to make `this` work in the callback
+        jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
 
         let request = {
-            template: {
-              name: 'Json'
-            },
-            data: {
-              dtStart: "11-01-2017 10:15:10"
-            }
+          template: {
+            name: 'Json'
+          },
+          data: {
+            dtStart: '11-01-2017 10:15:10'
           }
+        }
 
-//render through AJAX request and return promise with array buffer response
-jsreport.renderAsync(request).then(function(res) {
-     // This binding is necessary to make `this` work in the callback
-    var self2 = self; 
-  console.log(res);
-  let json = res.toString();
-  var t =json.replace(/&quot;/g,'"');
-  let obj = JSON.parse(t);
-  //open in new window
-  //window.open(res.toDataURI())
+        // render through AJAX request and return promise with array buffer response
+        jsreport.renderAsync(request).then(function (res) {
+          // This binding is necessary to make `this` work in the callback
+          let self2 = self
+          console.log(res)
+          let json = res.toString()
+          let t = json.replace(/&quot;/g, '"')
+          let obj = JSON.parse(t)
 
-       let request2 = {
+          let request2 = {
             template: {
               name: 'HtmlToBrowserClient'
             },
@@ -89,38 +89,21 @@ jsreport.renderAsync(request).then(function(res) {
             }
           }
 
-        // add custom headers to ajax calls
-        jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
-//        jsreport.render('detail', request2)
-/*
-      jsreport.renderAsync(request2).then(function(res) {
-        var self3 = self2;
-    // This binding is necessary to make `this` work in the callback
-        self3.setRptStep(2);
-         var detail =document.getElementById('detail');
-
-          var html = '<html>' +
-                  '<style>html,body {padding:0;margin:0;} iframe {width:100%;height:100%;border:0}</style>' +
-                  '<body>' +                                
-                  '<iframe id="myRpt" src="' +  res.toDataURI() + '"></iframe>' +
-                  '</body></html>';
-
-          detail.innerHTML = html;
-        });
-      });
+          jsreport.render('detail', request2)
+        })
+      }else{
+        this.props.history.push('/login')
+      }
       */
-});
-}
     } catch (e) {
       alert(e)
     }
-    this.setState({ isAuthenticating: false })
+ //   this.setState({ isAuthenticating: false })
+  }
 
-};
 
-
-// jsreport = require('jsreport-browser-client-dist')
-//jsreport.serverUrl = 'http://localhost:5488'
+  // jsreport = require('jsreport-browser-client-dist')
+  // jsreport.serverUrl = 'http://localhost:5488'
 
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated })
@@ -173,23 +156,15 @@ jsreport.renderAsync(request).then(function(res) {
     }
 
     const { activeItem, sbActiveItem, ddActiveItem, rptStep } = this.state
-    // const visible = true;
- /*
-    let divStyle = {
-      width: '100%',
-      height: '100%',
-      minHeight: '100%'
-      //      width: '100%'
-    }
-*/
-    let divStyle = {
-      width: '100%',
-      height: '100%',
-padding:'0px !important',
-margin:'0px !important',
 
-//margin:'0px 0px 0x 0px'
-//margin:'10px 5px 15px 20px'
+    let divStyle = {
+      width: '100%',
+      height: '100%',
+      padding: '0px !important',
+      margin: '0px !important'
+
+      // margin:'0px 0px 0x 0px'
+      // margin:'10px 5px 15px 20px'
 
       //      width: '100%'
     }
@@ -201,7 +176,7 @@ margin:'0px !important',
         <Menu fluid inverted attached='top'>
           {this.state.isAuthenticated ?
             [
-               <Menu.Item
+              <Menu.Item
                 name='toggleSidebar'
                 active={activeItem === 'toggleSidebar'}
                 onClick={(e, { name })=> {
@@ -209,9 +184,9 @@ margin:'0px !important',
                 }}>
                 <Icon name='sidebar'/>
               </Menu.Item>,
- <Dropdown 
-            icon='folder' item >
-    <Dropdown.Menu>
+              <Dropdown
+                icon='folder' item >
+                <Dropdown.Menu>
                   <Dropdown.Item
                     name='production'
                     active={ddActiveItem === 'production'}
@@ -234,55 +209,53 @@ margin:'0px !important',
                   >
                     <span id='ddPurchasing' className='text'>Purchasing</span>
                   </Dropdown.Item>
-    </Dropdown.Menu>
-  </Dropdown>,
+                </Dropdown.Menu>
+              </Dropdown>,
               <Menu.Item
                 name='accuracy'
                 active={activeItem === 'accuracy'}
-            onClick={(e, { name })=> {
-                  this.setState({ activeItem: name })
-                  this.setState({ sidebarVisible: false })
-
-    try {
-
-              let request = {
-                  template: {
-                    name: 'HtmlToBrowserClient'
-                  },
-                  data: {
-                    rptName: 'DashBoard'
-                  }
-                }
-
-              // add custom headers to ajax calls
-              jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
-              jsreport.render('detail', request)
-              this.setRptStep(2);
-    } catch (e) {
-      alert(e)
-    }
-
-            }}>
-            <Icon name='heartbeat'/>
-              <span className='text'>Accuracy</span>
-          </Menu.Item>,
-          <Menu.Menu position='right'>
-              <Menu.Item
-                name='logout'
-                active={activeItem === 'logout'}
                 onClick={(e, { name })=> {
                   this.setState({ activeItem: name })
-                  this.setRptStep(1)
                   this.setState({ sidebarVisible: false })
-                  childProps.rmReport()
-                  this.handleLogout();
+
+                  try {
+                    let request = {
+                      template: {
+                        name: 'HtmlToBrowserClient'
+                      },
+                      data: {
+                        rptName: 'DashBoard'
+                      }
+                    }
+
+                    // add custom headers to ajax calls
+                    jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
+                    jsreport.render('detail', request)
+                    this.setRptStep(2)
+                  } catch (e) {
+                    alert(e)
+                  }
                 }}>
-                <Icon name='block layout'/>
+                <Icon name='heartbeat'/>
+                <span className='text'>Accuracy</span>
+              </Menu.Item>,
+              <Menu.Menu position='right'>
+                <Menu.Item
+                  name='logout'
+                  active={activeItem === 'logout'}
+                  onClick={(e, { name })=> {
+                    this.setState({ activeItem: name })
+                    this.setRptStep(1)
+                    this.setState({ sidebarVisible: false })
+                    childProps.rmReport()
+                    this.handleLogout()
+                  }}>
+                  <Icon name='block layout'/>
                   <span className='text'>Logout&nbsp;&nbsp;&nbsp;</span>
-              </Menu.Item>
-          </Menu.Menu>
-          ]
-            : 
+                </Menu.Item>
+              </Menu.Menu>
+            ]
+            :
             [
               <Menu.Item
                 name='signup'
@@ -309,68 +282,68 @@ margin:'0px !important',
             ]
 
           }
-                  </Menu>
+        </Menu>
 
 
         {this.state.ddActiveItem === 'production' ?
-          <Sidebar.Pushable as={Segment}  attached='bottom'>
-            <Sidebar as={Menu} animation='push'  width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item 
+          <Sidebar.Pushable as={Segment} attached='bottom'>
+            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
+              <Menu.Item
                 name='tcsbyplant'
                 active={activeItem === 'tcsbyplant'}
                 onClick={(e, { name }) => {
                   this.setState({ sbActiveItem: name })
-                this.setRptStep(1)
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
+                  this.setRptStep(1)
+                  this.props.history.push('/tcsbyplant')
+                  this.setState({ sidebarVisible: false })
+                  this.setRptStep(1)
+                }}>
                 <Icon name='html5'/>ToolCost
               </Menu.Item>
-              <Menu.Item 
+              <Menu.Item
                 name='tcsbyplantXLS'
                 active={activeItem === 'tcsbyplantXLS'}
                 onClick={(e, { name }) => {
                   this.setState({ sbActiveItem: name })
-                this.setRptStep(1)
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-              }}>
+                  this.setRptStep(1)
+                  this.props.history.push('/tcsbyplant')
+                  this.setState({ sidebarVisible: false })
+                }}>
                 <Icon name='file excel outline'/>Excel
               </Menu.Item>
             </Sidebar>
             <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-        {rptStep === 1 ?
+              {rptStep === 1 ?
                 <Routes childProps={childProps} />
                 : ''
               }
-                <div id='detail' style={divStyle} className='container fill mycontainer' />
+              <div id='detail' style={divStyle} className='container fill mycontainer' />
             </Sidebar.Pusher>
           </Sidebar.Pushable>
           :
           <Sidebar.Pushable as={Segment} style={divStyle} attached='bottom'>
             <Sidebar as={Menu} style={divStyle} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item 
+              <Menu.Item
                 name='tcsbyplantXLS'
                 active={activeItem === 'tcsbyplantXLS'}
                 onClick={(e, { name }) => {
                   this.setState({ sbActiveItem: name })
-                this.setRptStep(1)
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-              }}>
+                  this.setRptStep(1)
+                  this.props.history.push('/tcsbyplant')
+                  this.setState({ sidebarVisible: false })
+                }}>
                 <Icon name='file excel outline'/>Excel
               </Menu.Item>
-              <Menu.Item 
+              <Menu.Item
                 name='tcsbyplant'
                 active={activeItem === 'tcsbyplant'}
                 onClick={(e, { name }) => {
                   this.setState({ sbActiveItem: name })
-                this.setRptStep(1)
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
+                  this.setRptStep(1)
+                  this.props.history.push('/tcsbyplant')
+                  this.setState({ sidebarVisible: false })
+                  this.setRptStep(1)
+                }}>
                 <Icon name='html5'/>ToolCost
               </Menu.Item>
 
@@ -389,118 +362,4 @@ margin:'0px !important',
 }
 
 export default withRouter(App)
-
-/*
-      <Menu fluid borderless inverted  secondary attached='bottom' widths={3}>
-        <Menu.Item name='buy' color='teal' active={activeItem === 'buy'} onClick={this.handleItemClick} />
-        <Menu.Item name='sell' color='teal' active={activeItem === 'sell'} onClick={this.handleItemClick} />
-        <Menu.Item name='rent' color='teal' active={activeItem === 'rent'} onClick={this.handleItemClick} />
-      </Menu>
-*/
-
-/*
-
-        {this.state.sidebar === 'production' ?
-          <Sidebar.Pushable as={Segment} attached='bottom'>
-            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item onClick={() => {
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
-                <Icon name='block layout'/>ToolCost
-              </Menu.Item>
-              <Menu.Item onClick={() => {
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
-                <Icon name='home'/>Excel
-              </Menu.Item>
-            </Sidebar>
-            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-              <Segment style={divStyle} basic className='container fill mycontainer'>
-                <Routes childProps={childProps} />
-                <div id='detail' style={divStyle} className='container fill mycontainer' />
-              </Segment>
-            </Sidebar.Pusher>
-          </Sidebar.Pushable>
-          :
-          <Sidebar.Pushable as={Segment} attached='bottom'>
-            <Sidebar as={Menu} animation='push' width='thin' visible={this.state.sidebarVisible} icon='labeled' vertical inverted>
-              <Menu.Item onClick={() => {
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
-                <Icon name='home'/>ToolCost
-              </Menu.Item>
-              <Menu.Item onClick={() => {
-                this.props.history.push('/tcsbyplant')
-                this.setState({ sidebarVisible: false })
-                this.setRptStep(1)
-              }}>
-                <Icon name='block layout'/>Excel
-              </Menu.Item>
-            </Sidebar>
-            <Sidebar.Pusher dimmed={this.state.sidebarVisible} style={divStyle} >
-              <Segment style={divStyle} basic className='container fill mycontainer'>
-                <Routes childProps={childProps} />
-                <div id='detail' style={divStyle} className='container fill mycontainer' />
-              </Segment>
-            </Sidebar.Pusher>
-          </Sidebar.Pushable>
-        }
-
-
-      <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
-        <div key='1'>
-          <MyNavBar childProps={childProps} />
-        </div>
-        <SplitPane split='vertical' allowResize={true} defaultSize={200}>
-          <div key='2' >
-            <MyAccord childProps={childProps} />
-          </div>
-	        <SplitPane split='vertical' allowResize={true} defaultSize={200}>
-	          <div key='4' >
-	            <Routes childProps={childProps} />
-	          </div>
-	          <div key='3' className='container fill' >
-	            <div  id='detail' />
-	          </div>
-	        </SplitPane>
-	        </SplitPane>
-	      </SplitPane>
-
-      <SplitPane split='horizontal' allowResize={false} defaultSize={40}>
-        <div key='1'>
-          <MyNavBar childProps={childProps} />
-        </div>
-        <SplitPane onChange={ this.handleResize } split='vertical' allowResize={true} defaultSize={200}>
-          <div key='2' >
-            <MyAccord childProps={childProps} />
-          </div>
-          <div key='3' >
-            <Routes childProps={childProps} />
-            <div id='detail' />
-          </div>
-        </SplitPane>
-      </SplitPane>
-
-    <SplitPane split="horizontal" allowResize={false} defaultSize={70}>
-        <div key="1">
-          <MyNavBar childProps={childProps} />
-        </div>
-        <SplitPane split="vertical" defaultSize={300}>
-            <div key="2" >
-              <MyAccord childProps={childProps} />
-            </div>
-            <div key="3" >
-              <Routes childProps={childProps} />
-               <div id='detail'></div>
-            </div>
-        </SplitPane>
-    </SplitPane>
-
-*/
 
