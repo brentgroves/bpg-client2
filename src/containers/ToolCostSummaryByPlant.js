@@ -1,16 +1,13 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import {  Grid,Container, Segment, Rail, Menu, Header, Icon } from 'semantic-ui-react'
-import { Button, Form, Message } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
+import { Grid, Segment, Header, Icon } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 import 'react-widgets/dist/css/react-widgets.css'
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment'
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
-import LoaderButton from '../components/LoaderButton'
-import MyReport from './MyReport'
 let jsreport = require('jsreport-browser-client-dist')
 jsreport.serverUrl = 'http://localhost:5488'
-
 
 
 Moment.locale('en')
@@ -59,7 +56,6 @@ class ToolCostSummaryByPlant extends React.Component {
     this.plt11Change = this.plt11Change.bind(this)
   }
 
-  
 
   /**
      * Set a new state with an increased counter
@@ -151,21 +147,6 @@ class ToolCostSummaryByPlant extends React.Component {
     try {
       // add custom headers to ajax calls
       jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
-      /*
-      var request = {
-         template: { 
-              name: 'WorkSumTransactions',
-          },
-          data:{
-            "dtStart": "01-1-2017 00:00:00",
-            "dtEnd": "01-12-2017 23:15:10",
-            "partNumber":"M0009326"
-          }
-      };
-
-      //display report in the new tab
-      jsreport.render('_blank', request);
-      */
       let dtStart = this.state.startDate.format('MM-DD-YYYY h:mm:ss')
 
 
@@ -315,63 +296,53 @@ class ToolCostSummaryByPlant extends React.Component {
   /* Nancy for year */
 
   render() {
-    let divStyle = {
-      width: '90%',
-      height: '100%',
-      minHeight: '100%'
-      //      width: '100%'
-    }
     return (
 
-  <Grid >
+      <Grid >
 
-    <Grid.Row>
-      <Grid.Column width={3}>
-      </Grid.Column>
-      <Grid.Column width={10}>
+        <Grid.Row>
+          <Grid.Column width={3} />
+          <Grid.Column width={10}>
                     &nbsp;<br />&nbsp;
 
-        <Segment>
-          <Header as='h2'>
-            <Icon name='plug' />
-            <Header.Content>
+            <Segment>
+              <Header as='h2'>
+                <Icon name='plug' />
+                <Header.Content>
               Tool Cost Summary
-            </Header.Content>
-          </Header>      
-          <p><strong>Description:</strong>{' '}This report sums all of the issues from the tool bosses and crib for a part number for a specified date range and department(s).  It also displays the current M2M Job Number, pieces produced, value added sales, total and cunsumable tool costs as well as a Tool Cost / Value Add Sales percentage.</p>
-          <p><strong>Start:</strong>{' '} </p>
-                        <DateTimePicker
-                          onChange={this.handleStartDateChange}
-                          defaultValue={ this.state.defStartDate}
-                        />
-          <p><strong>End:</strong>{' '} </p>
+                </Header.Content>
+              </Header>
+              <p><strong>Description:</strong>{' '}This report sums all of the issues from the tool bosses and crib for a part number for a specified date range and department(s).  It also displays the current M2M Job Number, pieces produced, value added sales, total and cunsumable tool costs as well as a Tool Cost / Value Add Sales percentage.</p>
+              <p><strong>Start:</strong>{' '} </p>
+              <DateTimePicker
+                onChange={this.handleStartDateChange}
+                defaultValue={ this.state.defStartDate}
+              />
+              <p><strong>End:</strong>{' '} </p>
 
-                        <DateTimePicker
-                          onChange={this.handleEndDateChange}
-                          defaultValue={this.state.defEndDate}
-                        />
-      <Form >
-  
-</Form>
+              <DateTimePicker
+                onChange={this.handleEndDateChange}
+                defaultValue={this.state.defEndDate}
+              />
+              <Form />
 
-        </Segment>
-      </Grid.Column>
-      <Grid.Column width={3}>
-      </Grid.Column>
-    </Grid.Row>
+            </Segment>
+          </Grid.Column>
+          <Grid.Column width={3} />
+        </Grid.Row>
 
 
-  </Grid>
+      </Grid>
 
 
-      )
+    )
   }
 }
 
-export default withRouter(ToolCostSummaryByPlant);
+export default withRouter(ToolCostSummaryByPlant)
 
 
- /*   
+/*   
     let headerStyle = {
       width: '100%',
       height: '100%',

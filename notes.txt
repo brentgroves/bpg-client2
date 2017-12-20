@@ -1,0 +1,3 @@
+In the process of making the toolcost form into a semantic form 
+add the button and plant list checkboxes to the semantic form
+the bootstrap code is still in the file

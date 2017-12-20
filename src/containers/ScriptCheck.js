@@ -1,28 +1,26 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import './Wait.css'
-import { Loader, Dimmer, Grid, Container, Segment, Rail, Menu, Header, Icon } from 'semantic-ui-react'
-import LoaderButton from '../components/LoaderButton'
+import { Loader, Dimmer, Grid } from 'semantic-ui-react'
 
 class ScriptCheck extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      isLoading:false
+      isLoading: false
     }
-
   }
 
 
   async componentDidMount() {
-    var thisChild = this;
+    let thisLv2 = this
     setTimeout(function () {
       //        self.props.setRptStep(2); 
       let detail = document.getElementById('detail')
       let childNodes = detail.childNodes
       if (childNodes.length !== 0) {
-        thisChild.props.setRptStep(2)
+        thisLv2.props.setRptStep(2)
       }
     }, 3000)
   }
@@ -31,21 +29,6 @@ class ScriptCheck extends Component {
     return 'success'
   }
   render() {
-    let iconStyle = {
-      width: '50%',
-      height: '65%',
-      padding: '150px'
-      //      width: '100%'
-    }
-
-
-    let centerStyle = {
-      textwidth: '100%',
-      height: '100%'
-
-      //      width: '100%'
-    }
-
     let divStyle = {
       width: '100%',
       height: '100%',
