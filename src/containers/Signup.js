@@ -1,16 +1,20 @@
 import React, { Component } from "react";
+import { Grid, Segment, Header, Icon, Button, Form, Message } from 'semantic-ui-react'
+import GenericModal from '../components/GenericModal'
+
 import {
   AuthenticationDetails,
   CognitoUserPool
 } from "amazon-cognito-identity-js";
 import config from "../config";
-
+/*
 import {
   HelpBlock,
   FormGroup,
   FormControl,
   ControlLabel
 } from "react-bootstrap";
+*/
 import LoaderButton from "../components/LoaderButton";
 import "./Signup.css";
 
@@ -25,14 +29,122 @@ export default class Signup extends Component {
       isLoading: false,
       email: "",
       password: "",
+
       confirmPassword: "",
       confirmationCode: "",
-      newUser: null
+      confirmationStatus:"",
+      newUser: null,
+
+      emailStatus: '',
+      passwordStatus: '',
+      formStatus: '',
+
+      modalOpen: false,
+      modalMessage: '',
+      modalHeading: ''
     };
+    // This binding is necessary to make `this` work in the callback
+    this.emailChange = this.emailChange.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.passwordChange = this.passwordChange.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.confirmationChange = this.confirmationChange.bind(this)
+
+    // This binding is necessary to make `this` work in the callback
+    this.validateEmail = this.validateEmail.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.setModal = this.setModal.bind(this)
+
+
   }
 componentDidMount() {
   setInterval(this.inc, 1000);
 }
+
+  setModal(open, message, heading) {
+    if (message) {
+      this.setState({
+        modalOpen: open,
+        modalMessage: message,
+        modalHeading: heading
+      })
+    } else {
+      this.setState({ modalOpen: open })
+    }
+  }
+  validateEmail(x) {
+    let atpos = x.indexOf('@')
+    let dotpos = x.lastIndexOf('.')
+    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
+      //  alert("Not a valid e-mail address");
+      return 'error'
+    }
+    return 'success'
+  }
+
+ // cant combine change functions because of async nature of setState
+  emailChange = event => {
+    let emailStatus = this.validateEmail(event.target.value)
+    this.setState({
+      [event.target.id]: event.target.value,
+      emailStatus: emailStatus
+    }) // async so be careful
+    let formStatus
+    if (emailStatus === 'success' && this.state.passwordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
+    this.setState({
+      formStatus: formStatus
+    }) // async so be careful
+  }
+
+  passwordChange = event => {
+    let passwordStatus
+    if (event.target.value.length > 0) {
+      passwordStatus = 'success'
+    } else {
+      passwordStatus = 'error'
+    }
+    this.setState({
+      [event.target.id]: event.target.value,
+      passwordStatus: passwordStatus
+    }) // async so be careful
+    let formStatus
+    if (this.state.emailStatus === 'success' && passwordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
+    this.setState({
+      formStatus: formStatus
+    }) // async so be careful
+  }
+
+  confirmationChange = event => {
+    let passwordStatus
+    if (event.target.value.length > 0) {
+      passwordStatus = 'success'
+    } else {
+      passwordStatus = 'error'
+    }
+    this.setState({
+      [event.target.id]: event.target.value,
+      passwordStatus: passwordStatus
+    }) // async so be careful
+    let formStatus
+    if (this.state.emailStatus === 'success' && passwordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
+    this.setState({
+      formStatus: formStatus
+    }) // async so be careful
+  }
+
+
   validateForm() {
     return (
       this.state.email.length > 0 &&
@@ -51,6 +163,8 @@ componentDidMount() {
     });
   }
 
+
+
   handleSubmit = async event => {
     event.preventDefault();
 
@@ -62,6 +176,9 @@ componentDidMount() {
         newUser: newUser
       });
 
+      this.props.history.push('/wait')
+
+/*
         let request = {
             template: {
               name: 'HtmlToBrowserClient'
@@ -75,7 +192,7 @@ componentDidMount() {
         jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
         jsreport.render('detail', request)
         this.props.setRptStep(2);
-//      this.props.history.push('/home')
+        */
       this.props.setSidebarVisible(false)
 
 
@@ -154,8 +271,17 @@ componentDidMount() {
 
 
   renderConfirmationForm() {
-    return (
-      <form onSubmit={this.handleConfirmationSubmit}>
+    const { modalOpen,confirmationStatus } = this.state
+
+    const childProps = {
+      modalOpen: this.state.modalOpen,
+      modalHeading: this.state.modalHeading,
+      modalMessage: this.state.modalMessage,
+      setModal: this.setModal
+    }
+
+/*
+
         <FormGroup controlId="confirmationCode" bsSize="large">
           <ControlLabel>Confirmation Code</ControlLabel>
           <FormControl
@@ -166,6 +292,45 @@ componentDidMount() {
           />
           <HelpBlock>Please check your email for the code.</HelpBlock>
         </FormGroup>
+  */
+
+    return (
+     <div >
+
+        {modalOpen ? <GenericModal childProps={childProps} />
+          :
+          <Grid >
+
+            <Grid.Row>
+              <Grid.Column width={3} />
+              <Grid.Column width={10}>
+                    &nbsp;<br />&nbsp;
+
+                <Segment>
+                  <Header as='h2'>
+                    <Icon name='plug' />
+                    <Header.Content>
+              Welcome to Busche!
+                    </Header.Content>
+                  </Header>
+
+      <form onSubmit={this.handleConfirmationSubmit}>
+                    {(confirmationStatus === 'error'
+                      ?
+                      <Form.Input
+                        error
+                        id='confirmationCode'
+                        label='Confirmation' placeholder='confirmation'
+                        onChange={this.handleChange}
+                      />
+                      :
+                      <Form.Input
+                        id='confirmationCode'
+                        label='Confirmation' placeholder='confirmation'
+                        onChange={this.handleChange}
+                      />
+                    )}
+
         <LoaderButton
           block
           bsSize="large"
@@ -176,12 +341,22 @@ componentDidMount() {
           loadingText="Verifying…"
         />
       </form>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={3} />
+            </Grid.Row>
+
+
+          </Grid>
+        }
+      </div>
+
     );
   }
 
   renderForm() {
-    return (
-      <form onSubmit={this.handleSubmit}>
+
+/*
         <FormGroup controlId="email" bsSize="large">
           <ControlLabel>Email</ControlLabel>
           <FormControl
@@ -207,20 +382,110 @@ componentDidMount() {
             type="password"
           />
         </FormGroup>
-        <LoaderButton
-          block
-          bsSize="large"
-          disabled={!this.validateForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          text="Signup"
-          loadingText="Signing up…"
-        />
-      </form>
+        */
+
+    const { modalOpen,emailStatus,passwordStatus,confirmationStatus } = this.state
+
+    const childProps = {
+      modalOpen: this.state.modalOpen,
+      modalHeading: this.state.modalHeading,
+      modalMessage: this.state.modalMessage,
+      setModal: this.setModal
+    }
+
+    return (
+     <div >
+
+        {modalOpen ? <GenericModal childProps={childProps} />
+          :
+          <Grid >
+
+            <Grid.Row>
+              <Grid.Column width={3} />
+              <Grid.Column width={10}>
+                    &nbsp;<br />&nbsp;
+
+                <Segment>
+                  <Header as='h2'>
+                    <Icon name='plug' />
+                    <Header.Content>
+              Welcome to Busche!
+                    </Header.Content>
+                  </Header>
+
+                  <Form >
+                      {(emailStatus === 'error'
+                      ?
+                      <Form.Input
+                        error
+                        id='email'
+                        label='Email' placeholder='joe@schmoe.com'
+                        onChange={this.emailChange}
+                      />
+                      :
+                      <Form.Input
+                        id='email'
+                        label='Email' placeholder='joe@schmoe.com'
+                        onChange={this.emailChange}
+                      />
+                    )}
+
+                   {(passwordStatus === 'error'
+                      ?
+                      <Form.Input
+                        error
+                        id='password'
+                        label='Enter Password'
+                        type='password'
+                        onChange={this.passwordChange}
+                      />
+                      :
+                      <Form.Input
+                        id='password'
+                        label='Enter Password'
+                        type='password'
+                        onChange={this.passwordChange}
+                      />
+                    )}
+
+                   {(confirmationStatus === 'error'
+                      ?
+                      <Form.Input
+                        error
+                        id='passwordConfirmation'
+                        label='Confirm Password'
+                        type='password'
+                        onChange={this.confirmationChange}
+                      />
+                      :
+                      <Form.Input
+                        id='passwordConfirmation'
+                        label='Confirm Password'
+                        type='password'
+                        onChange={this.confirmationChange}
+                      />
+                    )}
+
+                    <Button disabled={!this.validateForm}
+                      loading={this.state.isLoading} onClick={this.handleSubmit}>Submit</Button>
+
+      </Form>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={3} />
+            </Grid.Row>
+
+
+          </Grid>
+        }
+      </div>
+
     );
   }
 
   render() {
+
+
     return (
       <div className="Signup">
         {this.state.newUser === null
