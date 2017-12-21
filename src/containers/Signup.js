@@ -26,34 +26,37 @@ export default class Signup extends Component {
     super(props);
 
     this.state = {
-      isLoading: false,
+      loading: false,
       email: "",
       password: "",
-
       confirmPassword: "",
       confirmationCode: "",
-      confirmationStatus:"",
       newUser: null,
 
       emailStatus: '',
       passwordStatus: '',
+      confirmPasswordStatus:"",
       formStatus: '',
 
       modalOpen: false,
       modalMessage: '',
       modalHeading: ''
+
+
+
     };
     // This binding is necessary to make `this` work in the callback
     this.emailChange = this.emailChange.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.passwordChange = this.passwordChange.bind(this)
     // This binding is necessary to make `this` work in the callback
-    this.confirmationChange = this.confirmationChange.bind(this)
+    this.confirmaPasswordChange = this.confirmPasswordChange.bind(this)
 
     // This binding is necessary to make `this` work in the callback
     this.validateEmail = this.validateEmail.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.setModal = this.setModal.bind(this)
+
 
 
   }
@@ -89,15 +92,6 @@ componentDidMount() {
       [event.target.id]: event.target.value,
       emailStatus: emailStatus
     }) // async so be careful
-    let formStatus
-    if (emailStatus === 'success' && this.state.passwordStatus === 'success') {
-      formStatus = 'success'
-    } else {
-      formStatus = 'error'
-    }
-    this.setState({
-      formStatus: formStatus
-    }) // async so be careful
   }
 
   passwordChange = event => {
@@ -107,62 +101,40 @@ componentDidMount() {
     } else {
       passwordStatus = 'error'
     }
-    this.setState({
-      [event.target.id]: event.target.value,
-      passwordStatus: passwordStatus
-    }) // async so be careful
-    let formStatus
-    if (this.state.emailStatus === 'success' && passwordStatus === 'success') {
-      formStatus = 'success'
+    let confirmPasswordStatus
+    if (this.state.confirmPassword === event.target.value) {
+      confirmPasswordStatus = 'success'
     } else {
-      formStatus = 'error'
-    }
-    this.setState({
-      formStatus: formStatus
-    }) // async so be careful
-  }
-
-  confirmationChange = event => {
-    let passwordStatus
-    if (event.target.value.length > 0) {
-      passwordStatus = 'success'
-    } else {
-      passwordStatus = 'error'
+      confirmPasswordStatus = 'error'
     }
     this.setState({
       [event.target.id]: event.target.value,
-      passwordStatus: passwordStatus
+      passwordStatus: passwordStatus,
+      confirmPasswordStatus: confirmPasswordStatus
     }) // async so be careful
-    let formStatus
-    if (this.state.emailStatus === 'success' && passwordStatus === 'success') {
-      formStatus = 'success'
+
+
+
+
+  }
+
+  confirmPasswordChange = event => {
+    let confirmPasswordStatus
+    if (this.state.password === event.target.value) {
+      confirmPasswordStatus = 'success'
     } else {
-      formStatus = 'error'
+      confirmPasswordStatus = 'error'
     }
     this.setState({
-      formStatus: formStatus
+      [event.target.id]: event.target.value,
+      confirmPasswordStatus: confirmPasswordStatus
     }) // async so be careful
   }
 
-
-  validateForm() {
-    return (
-      this.state.email.length > 0 &&
-      this.state.password.length > 0 &&
-      this.state.password === this.state.confirmPassword
-    );
-  }
 
   validateConfirmationForm() {
     return this.state.confirmationCode.length > 0;
   }
-
-  handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
-  }
-
 
 
   handleSubmit = async event => {
@@ -280,20 +252,6 @@ componentDidMount() {
       setModal: this.setModal
     }
 
-/*
-
-        <FormGroup controlId="confirmationCode" bsSize="large">
-          <ControlLabel>Confirmation Code</ControlLabel>
-          <FormControl
-            autoFocus
-            type="tel"
-            value={this.state.confirmationCode}
-            onChange={this.handleChange}
-          />
-          <HelpBlock>Please check your email for the code.</HelpBlock>
-        </FormGroup>
-  */
-
     return (
      <div >
 
@@ -355,37 +313,7 @@ componentDidMount() {
   }
 
   renderForm() {
-
-/*
-        <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
-          <FormControl
-            autoFocus
-            type="email"
-            value={this.state.email}
-            onChange={this.handleChange}
-          />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <ControlLabel>Password</ControlLabel>
-          <FormControl
-            value={this.state.password}
-            onChange={this.handleChange}
-            type="password"
-          />
-        </FormGroup>
-        <FormGroup controlId="confirmPassword" bsSize="large">
-          <ControlLabel>Confirm Password</ControlLabel>
-          <FormControl
-            value={this.state.confirmPassword}
-            onChange={this.handleChange}
-            type="password"
-          />
-        </FormGroup>
-        */
-
-    const { modalOpen,emailStatus,passwordStatus,confirmationStatus } = this.state
-
+    const { modalOpen,emailStatus,passwordStatus,confirmPasswordStatus } = this.state
     const childProps = {
       modalOpen: this.state.modalOpen,
       modalHeading: this.state.modalHeading,
@@ -448,26 +376,32 @@ componentDidMount() {
                       />
                     )}
 
-                   {(confirmationStatus === 'error'
+                   {(confirmPasswordStatus === 'error'
                       ?
                       <Form.Input
                         error
-                        id='passwordConfirmation'
+                        id='confirmPassword'
                         label='Confirm Password'
                         type='password'
-                        onChange={this.confirmationChange}
+                        onChange={this.confirmPasswordChange}
                       />
                       :
                       <Form.Input
-                        id='passwordConfirmation'
+                        id='confirmPassword'
                         label='Confirm Password'
                         type='password'
-                        onChange={this.confirmationChange}
+                        onChange={this.confirmPasswordChange}
                       />
                     )}
 
-                    <Button disabled={!this.validateForm}
-                      loading={this.state.isLoading} onClick={this.handleSubmit}>Submit</Button>
+                    <Button 
+                      disabled={
+                        emailStatus!=='success' || 
+                        passwordStatus!=='success' ||
+                        confirmPasswordStatus!=='success'
+                      }
+                      loading={this.state.loading} 
+                      onClick={this.handleSubmit}>Submit</Button>
 
       </Form>
                 </Segment>
