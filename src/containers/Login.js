@@ -195,18 +195,18 @@ class Login extends Component {
           <Grid >
 
             <Grid.Row>
-              <Grid.Column width={3} />
-              <Grid.Column width={10}>
+              <Grid.Column width={5} />
+              <Grid.Column width={6}>
                     &nbsp;<br />&nbsp;
 
-                <Segment>
+                <Segment inverted>
                   <Header as='h2'>
-                    <Icon name='plug' />
+                    <Icon name='user outline' />
                     <Header.Content>
               Welcome to Busche!
                     </Header.Content>
                   </Header>
-                  <Form >
+                  <Form inverted >
                     {(emailStatus === 'error'
                       ?
                       <Form.Input
@@ -255,7 +255,7 @@ class Login extends Component {
 
                 </Segment>
               </Grid.Column>
-              <Grid.Column width={3} />
+              <Grid.Column width={5} />
             </Grid.Row>
 
 
