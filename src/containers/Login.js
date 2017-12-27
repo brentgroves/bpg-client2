@@ -36,6 +36,9 @@ class Login extends Component {
     this.validateEmail = this.validateEmail.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.setModal = this.setModal.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.handleSubmit = this.handleSubmit.bind(this)
+
   }
 
   setModal(open, message, heading) {
@@ -123,7 +126,6 @@ class Login extends Component {
     try {
       await this.login(this.state.email, this.state.password)
       this.props.userHasAuthenticated(true)
-
       let thisLv1 = this
       // This binding is necessary to make `this` work in the callback
       jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
@@ -172,7 +174,12 @@ class Login extends Component {
         }
       })
     } catch (e) {
-      alert(e)
+      this.setState({ loading: false })
+      this.setState({
+        modalOpen: true,
+        modalHeading: 'Login failure!',
+        modalMessage: 'file: Login.js'
+      })
     }
   }
 
@@ -207,48 +214,24 @@ class Login extends Component {
                     </Header.Content>
                   </Header>
                   <Form inverted >
-                    {(emailStatus === 'error'
-                      ?
-                      <Form.Input
-                        error
-                        id='email'
-                        label='Email' placeholder='joe@schmoe.com'
-                        onChange={this.emailChange}
-                      />
-                      :
-                      <Form.Input
-                        id='email'
-                        label='Email' placeholder='joe@schmoe.com'
-                        onChange={this.emailChange}
-                      />
-                    )}
-
-
+                    <Form.Input
+                      error={emailStatus === 'error'}
+                      id='email'
+                      label='Email' placeholder='joe@schmoe.com'
+                      onChange={this.emailChange}
+                    />
                     <Message
                       success
                       header='Form Completed'
                       content="You're all signed up for the newsletter"
                     />
-
-
-                    {(passwordStatus === 'error'
-                      ?
-                      <Form.Input
-                        error
-                        id='password'
-                        label='Enter Password'
-                        type='password'
-                        onChange={this.passwordChange}
-                      />
-                      :
-                      <Form.Input
-                        id='password'
-                        label='Enter Password'
-                        type='password'
-                        onChange={this.passwordChange}
-                      />
-                    )}
-
+                    <Form.Input
+                      error={passwordStatus === 'error'}
+                      id='password'
+                      label='Enter Password'
+                      type='password'
+                      onChange={this.passwordChange}
+                    />
                     <Button disabled={disableSubmitButton}
                       loading={loading} onClick={this.handleSubmit}>Submit</Button>
                   </Form>

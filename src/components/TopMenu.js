@@ -101,9 +101,6 @@ class TopMenu extends Component {
                   name='logout'
                   active={topmenuActiveItem === 'logout'}
                   onClick={(e, { name })=> {
-                    setTopmenuActiveItem(name)
-                    setSidebarVisible(false)
-                    rmReport()
                     handleLogout()
                   }}>
                   <Icon name='block layout'/>

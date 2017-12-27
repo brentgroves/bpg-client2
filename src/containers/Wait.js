@@ -49,8 +49,7 @@ class Wait extends Component {
 
 
     return (
-      [
-        <Grid basic style={divStyle}>
+        <Grid style={divStyle}>
           <Grid.Column width={8} style={divStyle} >
             <Dimmer style={divStyle} active >
               <Loader style={divStyle}>Loading</Loader>
@@ -66,7 +65,6 @@ class Wait extends Component {
 
 
         </Grid>
-      ]
     )
   }
 }

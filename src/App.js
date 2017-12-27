@@ -85,7 +85,8 @@ setTopmenuActiveItem = item => {
     this.rmReport()
     signOutUser()
     this.userHasAuthenticated(false)
-    this.setState({ sidebarVisible: false })
+    this.setSidebarVisible(false)
+    this.setRptStep(1)
     this.props.history.push('/login')
   }
 
