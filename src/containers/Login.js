@@ -172,6 +172,13 @@ class Login extends Component {
           jsreport.render('detail', request2)
           thisLv2.props.history.push('/wait')
         }
+      }).catch(function(e){
+        thisLv1.setState({ loading: false })
+        thisLv1.setState({
+          modalOpen: true,
+          modalHeading: 'jsreport failure!',
+          modalMessage: 'file: Login.js'
+        })
       })
     } catch (e) {
       this.setState({ loading: false })

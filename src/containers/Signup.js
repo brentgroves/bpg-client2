@@ -88,9 +88,18 @@ export default class Signup extends Component {
   // cant combine change functions because of async nature of setState
   emailChange = event => {
     let emailStatus = this.validateEmail(event.target.value)
+    let formStatus
+    if (emailStatus === 'success' && 
+      this.state.passwordStatus === 'success' &&
+      this.state.confirmPasswordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
     this.setState({
       [event.target.id]: event.target.value,
-      emailStatus: emailStatus
+      emailStatus: emailStatus,
+      formStatus: formStatus
     }) // async so be careful
   }
 
@@ -107,10 +116,20 @@ export default class Signup extends Component {
     } else {
       confirmPasswordStatus = 'error'
     }
+    let formStatus
+    if (this.state.emailStatus === 'success' && 
+      passwordStatus === 'success' &&
+      confirmPasswordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
+
     this.setState({
       [event.target.id]: event.target.value,
       passwordStatus: passwordStatus,
-      confirmPasswordStatus: confirmPasswordStatus
+      confirmPasswordStatus: confirmPasswordStatus,
+      formStatus: formStatus
     }) // async so be careful
   }
 
@@ -121,9 +140,19 @@ export default class Signup extends Component {
     } else {
       confirmPasswordStatus = 'error'
     }
+    let formStatus
+    if (this.state.emailStatus === 'success' && 
+      this.state.passwordStatus === 'success' &&
+      confirmPasswordStatus === 'success') {
+      formStatus = 'success'
+    } else {
+      formStatus = 'error'
+    }
+
     this.setState({
       [event.target.id]: event.target.value,
-      confirmPasswordStatus: confirmPasswordStatus
+      confirmPasswordStatus: confirmPasswordStatus,
+      formStatus: formStatus
     }) // async so be careful
   }
 
@@ -299,7 +328,8 @@ export default class Signup extends Component {
   }
 
   renderForm() {
-    const { emailStatus, passwordStatus, confirmPasswordStatus } = this.state
+    const { emailStatus, passwordStatus, confirmPasswordStatus,loading,formStatus } = this.state
+    let disableSubmitButton = (formStatus !== 'success') ? true : false
 
     return (
       <div >
@@ -343,12 +373,8 @@ export default class Signup extends Component {
                   />
 
                   <Button
-                    disabled={
-                      emailStatus !== 'success' ||
-                        passwordStatus !== 'success' ||
-                        confirmPasswordStatus !== 'success'
-                    }
-                    loading={this.state.loading}
+                    disabled={disableSubmitButton}
+                    loading={loading}
                     onClick={this.handleSubmit}>Submit</Button>
 
                 </Form>
