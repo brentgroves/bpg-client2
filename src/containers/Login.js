@@ -53,22 +53,6 @@ class Login extends Component {
     }
   }
 
-  login(email, password) {
-    const userPool = new CognitoUserPool({
-      UserPoolId: config.cognito.USER_POOL_ID,
-      ClientId: config.cognito.APP_CLIENT_ID
-    })
-    const user = new CognitoUser({ Username: email, Pool: userPool })
-    const authenticationData = { Username: email, Password: password }
-    const authenticationDetails = new AuthenticationDetails(authenticationData)
-
-    return new Promise((resolve, reject) =>
-      user.authenticateUser(authenticationDetails, {
-        onSuccess: result => resolve(),
-        onFailure: err => reject(err)
-      })
-    )
-  }
 
   validateEmail(x) {
     let atpos = x.indexOf('@')
@@ -118,6 +102,23 @@ class Login extends Component {
     this.setState({
       formStatus: formStatus
     }) // async so be careful
+  }
+
+  login(email, password) {
+    const userPool = new CognitoUserPool({
+      UserPoolId: config.cognito.USER_POOL_ID,
+      ClientId: config.cognito.APP_CLIENT_ID
+    })
+    const user = new CognitoUser({ Username: email, Pool: userPool })
+    const authenticationData = { Username: email, Password: password }
+    const authenticationDetails = new AuthenticationDetails(authenticationData)
+
+    return new Promise((resolve, reject) =>
+      user.authenticateUser(authenticationDetails, {
+        onSuccess: result => resolve(),
+        onFailure: err => reject(err)
+      })
+    )
   }
 
   handleSubmit = async event => {
@@ -257,4 +258,3 @@ class Login extends Component {
 }
 
 export default withRouter(Login)
-

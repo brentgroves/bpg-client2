@@ -1,34 +1,26 @@
 import React, { Component } from 'react'
-import { Grid, Segment, Header, Icon, Button, Form } from 'semantic-ui-react'
+import { Grid, Segment, Header, Icon, Form, Message } from 'semantic-ui-react'
 import GenericModal from '../components/GenericModal'
-
 import {
-  CognitoUserPool
+  CognitoUserPool,
+  CognitoUser
 } from 'amazon-cognito-identity-js'
 import config from '../config'
-import './Signup.css'
 
-let jsreport = require('jsreport-browser-client-dist')
-jsreport.serverUrl = 'http://localhost:5488'
 
-export default class Signup extends Component {
+export default class Confirm extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       loading: false,
       email: '',
-      password: '',
-      confirmPassword: '',
-      confirmationCode: '',
-      newUser: null,
-
       emailStatus: '',
-      passwordStatus: '',
-      confirmPasswordStatus: '',
+      confirmationCode: '',
+      confirmationCodeStatus: '',
       formStatus: '',
-      confirmationsStatus: '',
-
+      newUser: null,
+      confirmed: false,
       modalOpen: false,
       modalMessage: '',
       modalHeading: ''
@@ -38,17 +30,13 @@ export default class Signup extends Component {
     // This binding is necessary to make `this` work in the callback
     this.emailChange = this.emailChange.bind(this)
     // This binding is necessary to make `this` work in the callback
-    this.passwordChange = this.passwordChange.bind(this)
-    // This binding is necessary to make `this` work in the callback
-    this.confirmaPasswordChange = this.confirmPasswordChange.bind(this)
-    // This binding is necessary to make `this` work in the callback
-    this.signup = this.signup.bind(this)
-
-    // This binding is necessary to make `this` work in the callback
-    this.handleSubmit = this.handleSubmit.bind(this)
-
+    this.confirmationCodeChange = this.confirmationCodeChange.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.validateEmail = this.validateEmail.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.handleSubmit = this.handleSubmit.bind(this)
+    // This binding is necessary to make `this` work in the callback
+    this.confirm = this.confirm.bind(this)
 
     // This binding is necessary to make `this` work in the callback
     this.setModal = this.setModal.bind(this)
@@ -78,14 +66,12 @@ export default class Signup extends Component {
     return 'success'
   }
 
-
   // cant combine change functions because of async nature of setState
   emailChange = event => {
     let emailStatus = this.validateEmail(event.target.value)
     let formStatus
     if (emailStatus === 'success' &&
-      this.state.passwordStatus === 'success' &&
-      this.state.confirmPasswordStatus === 'success') {
+      this.state.confirmationStatus === 'success') {
       formStatus = 'success'
     } else {
       formStatus = 'error'
@@ -97,23 +83,16 @@ export default class Signup extends Component {
     }) // async so be careful
   }
 
-  passwordChange = event => {
-    let passwordStatus
+  confirmationCodeChange = event => {
+    let confirmationCodeStatus
     if (event.target.value.length > 0) {
-      passwordStatus = 'success'
+      confirmationCodeStatus = 'success'
     } else {
-      passwordStatus = 'error'
-    }
-    let confirmPasswordStatus
-    if (this.state.confirmPassword === event.target.value) {
-      confirmPasswordStatus = 'success'
-    } else {
-      confirmPasswordStatus = 'error'
+      confirmationCodeStatus = 'error'
     }
     let formStatus
     if (this.state.emailStatus === 'success' &&
-      passwordStatus === 'success' &&
-      confirmPasswordStatus === 'success') {
+      confirmationCodeStatus === 'success') {
       formStatus = 'success'
     } else {
       formStatus = 'error'
@@ -121,31 +100,7 @@ export default class Signup extends Component {
 
     this.setState({
       [event.target.id]: event.target.value,
-      passwordStatus: passwordStatus,
-      confirmPasswordStatus: confirmPasswordStatus,
-      formStatus: formStatus
-    }) // async so be careful
-  }
-
-  confirmPasswordChange = event => {
-    let confirmPasswordStatus
-    if (this.state.password === event.target.value) {
-      confirmPasswordStatus = 'success'
-    } else {
-      confirmPasswordStatus = 'error'
-    }
-    let formStatus
-    if (this.state.emailStatus === 'success' &&
-      this.state.passwordStatus === 'success' &&
-      confirmPasswordStatus === 'success') {
-      formStatus = 'success'
-    } else {
-      formStatus = 'error'
-    }
-
-    this.setState({
-      [event.target.id]: event.target.value,
-      confirmPasswordStatus: confirmPasswordStatus,
+      confirmationCodeStatus: confirmationCodeStatus,
       formStatus: formStatus
     }) // async so be careful
   }
@@ -154,102 +109,121 @@ export default class Signup extends Component {
   handleSubmit = async event => {
     event.preventDefault()
 
-    this.setState({ loading: true })
-      let thisLv1 = this
-      await this.signup(this.state.email, this.state.password)
-      .then(function(){
-        thisLv1.props.history.push('/confirm')
-      }).catch(function(e){
+    this.setState({ isLoading: true })
+
+    let thisLv1 = this
+    await this.confirm(this.state.email, this.state.confirmationCode)
+      .then(function () {
+        thisLv1.setState({
+          confirmed: true
+        })
+      }).catch(function (e) {
         thisLv1.setState({ loading: false })
         thisLv1.setState({
           modalOpen: true,
-          modalHeading: 'Signup failure!',
+          modalHeading: 'Confirmation failure!',
           modalMessage: e
         })
       })
   }
 
 
-  signup(email, password) {
+  // http://docs.aws.amazon.com/cognito/latest/developerguide/using-amazon-cognito-user-identity-pools-javascript-examples.html#using-amazon-cognito-identity-user-pools-javascript-example-confirming-user
+  confirm(email, confirmationCode) {
     const userPool = new CognitoUserPool({
       UserPoolId: config.cognito.USER_POOL_ID,
       ClientId: config.cognito.APP_CLIENT_ID
     })
-
+    const user = new CognitoUser({ Username: email, Pool: userPool })
     return new Promise((resolve, reject) =>
-      userPool.signUp(email, password, [], null, (err, result) => {
+      user.confirmRegistration(confirmationCode, true, function (err, result) {
         if (err) {
           reject(err.message)
-          return
         }
-        resolve(result.user)
+        resolve(result)
       })
     )
   }
+  //                    &nbsp;<br />&nbsp;
 
-  renderForm() {
-    const { emailStatus, passwordStatus, confirmPasswordStatus, loading, formStatus } = this.state
+  renderConfirmationForm() {
+    const { emailStatus, confirmationStatus, loading, formStatus, confirmed } = this.state
     let disableSubmitButton = (formStatus !== 'success') ? true : false
-
+    let disableLoginButton = (formStatus !== 'success') ? true : false
+    let message = confirmed ? 'You may now login.'
+      : 'Please check your email for the code.'
     return (
-      <div >
+      <Grid >
+        {confirmed ?
 
-        <Grid >
-
-          <Grid.Row>
-            <Grid.Column width={5} />
-            <Grid.Column width={6}>
-                    &nbsp;<br />&nbsp;
+          <Grid.Row centered>
+            <Grid.Column width={6} >
 
               <Segment inverted>
+
                 <Header as='h2'>
                   <Icon name='user outline' />
                   <Header.Content>
-              New user info
+              Confirmation Success
                   </Header.Content>
                 </Header>
+                <Form inverted >
+                  <Form.Button key='9'
+                    disabled={disableLoginButton}
+                    onClick={()=>{
+                      this.props.history.push('/login')
+                    }} content='Login'/>
+                  <Message color='blue' content={message} />
 
-                <Form inverted>
+                </Form>
+
+              </Segment>
+            </Grid.Column>
+          </Grid.Row>
+
+          :
+
+
+          <Grid.Row centered>
+            <Grid.Column width={6} >
+              <Segment inverted>
+
+                <Header as='h2'>
+                  <Icon name='user outline' />
+                  <Header.Content>
+              Confirmation Code
+                  </Header.Content>
+                </Header>
+                <Form inverted >
                   <Form.Input
                     error={emailStatus === 'error'}
                     id='email'
                     label='Email' placeholder='joe@schmoe.com'
                     onChange={this.emailChange}
                   />
-
                   <Form.Input
-                    error={(passwordStatus === 'error')}
-                    id='password'
-                    label='Enter Password'
-                    type='password'
-                    onChange={this.passwordChange}
+                    error={confirmationStatus === 'error'}
+                    id='confirmationCode'
+                    label='Confirmation Code' placeholder='confirmation code'
+                    onChange={this.confirmationCodeChange}
                   />
-                  <Form.Input
-                    error={(confirmPasswordStatus === 'error')}
-                    id='confirmPassword'
-                    label='Confirm Password'
-                    type='password'
-                    onChange={this.confirmPasswordChange}
-                  />
-
-                  <Button
+                  <Form.Button key='10'
                     disabled={disableSubmitButton}
                     loading={loading}
-                    onClick={this.handleSubmit}>Submit</Button>
-
+                    onClick={this.handleSubmit} content='Submit'/>
                 </Form>
               </Segment>
+              <Segment>
+                <Message color='blue' content={message} />
+              </Segment>
             </Grid.Column>
-            <Grid.Column width={5} />
           </Grid.Row>
-
-
-        </Grid>
         }
-      </div>
+      </Grid>
 
     )
   }
+
 
   render() {
     const { modalOpen } = this.state
@@ -268,9 +242,7 @@ export default class Signup extends Component {
             if (modalOpen) {
               return <GenericModal childProps={childProps} />
             }
-            if (this.state.newUser === null) {
-              return this.renderForm()
-            }
+            return this.renderConfirmationForm()
           })()
         }
       </div>

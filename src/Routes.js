@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 import Home from './containers/Home'
 import Login from './containers/Login'
 import Signup from './containers/Signup'
+import Confirm from './containers/Confirm'
 import NotFound from './containers/NotFound'
 import ToolCostSummaryByPlant from './containers/ToolCostSummaryByPlant'
 import Wait from './containers/Wait'
@@ -20,6 +21,7 @@ export default ({ childProps }) =>
     <AppliedRoute path='/home' exact component={Home} props={childProps} />
     <AppliedRoute path='/login' exact component={Login} props={childProps} />
     <AppliedRoute path='/signup' exact component={Signup} props={childProps} />
+    <AppliedRoute path='/confirm' exact component={Confirm} props={childProps} />
     <AppliedRoute path='/tcsbyplant' exact component={ToolCostSummaryByPlant} props={childProps} />
     <Route component={NotFound} />
   </Switch>)
