@@ -155,16 +155,16 @@ export default class Signup extends Component {
     event.preventDefault()
 
     this.setState({ loading: true })
-      let thisLv1 = this
-      await this.signup(this.state.email, this.state.password)
-      .then(function(){
+    let thisLv1 = this
+    await this.signup(this.state.email, this.state.password)
+      .then(function () {
         thisLv1.props.history.push('/confirm')
-      }).catch(function(e){
-        thisLv1.setState({ loading: false })
+      }).catch(function (e) {
         thisLv1.setState({
+          loading: false,
           modalOpen: true,
           modalHeading: 'Signup failure!',
-          modalMessage: e
+          modalMessage: e.message
         })
       })
   }

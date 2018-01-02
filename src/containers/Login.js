@@ -38,7 +38,6 @@ class Login extends Component {
     this.setModal = this.setModal.bind(this)
     // This binding is necessary to make `this` work in the callback
     this.handleSubmit = this.handleSubmit.bind(this)
-
   }
 
   setModal(open, message, heading) {
@@ -124,71 +123,73 @@ class Login extends Component {
   handleSubmit = async event => {
     event.preventDefault()
     this.setState({ loading: true })
-    try {
-      await this.login(this.state.email, this.state.password)
-      this.props.userHasAuthenticated(true)
-      let thisLv1 = this
-      // This binding is necessary to make `this` work in the callback
-      jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
-
-      let request = {
-        template: {
-          name: 'Json'
-        },
-        data: {
-          dtStart: '11-01-2017 10:15:10'
-        }
-      }
-
-      // render through AJAX request and return promise with array buffer response
-      jsreport.renderAsync(request).then(function (res) {
-        // This binding is necessary to make `this` work in the callback
-        let done = false
+    let thisLv1 = this
+    await this.login(this.state.email, this.state.password)
+      .then(function () {
         let thisLv2 = thisLv1
-        console.log(res)
-        let json = res.toString()
-        let t = json.replace(/&quot;/g, '"')
-        let obj = JSON.parse(t)
-        const { notCurrent } = obj
-        thisLv2.setState({ loading: false })
+        thisLv2.props.userHasAuthenticated(true)
+        // This binding is necessary to make `this` work in the callback
+        jsreport.headers.Authorization = 'Basic ' + btoa('admin:password')
 
-        if (notCurrent) {
-          thisLv2.setState({
-            modalOpen: true,
-            modalHeading: 'Script Failure',
-            modalMessage: 'SSIS scripts did not process!'
-          })
-
-          done = true
-        }
-        if (!done) {
-          let request2 = {
-            template: {
-              name: 'HtmlToBrowserClient'
-            },
-            data: {
-              rptName: 'DashBoard'
-            }
+        let request = {
+          template: {
+            name: 'Json'
+          },
+          data: {
+            dtStart: '11-01-2017 10:15:10'
           }
-          jsreport.render('detail', request2)
-          thisLv2.props.history.push('/wait')
         }
-      }).catch(function(e){
-        thisLv1.setState({ loading: false })
+        // render through AJAX request and return promise with array buffer response
+        jsreport.renderAsync(request)
+          .then(function (res) {
+          // This binding is necessary to make `this` work in the callback
+            let done = false
+            let thisLv3 = thisLv2
+            console.log(res)
+            let json = res.toString()
+            let t = json.replace(/&quot;/g, '"')
+            let obj = JSON.parse(t)
+            const { notCurrent } = obj
+            if (notCurrent) {
+              thisLv3.setState({
+                loading: false,
+                modalOpen: true,
+                modalHeading: 'Script Failure',
+                modalMessage: 'SSIS scripts did not process!'
+              })
+
+              done = true
+            }else{
+              thisLv3.setState({ loading: false })
+            }
+            if (!done) {
+              let request2 = {
+                template: {
+                  name: 'HtmlToBrowserClient'
+                },
+                data: {
+                  rptName: 'DashBoard'
+                }
+              }
+              jsreport.render('detail', request2)
+              thisLv3.props.history.push('/wait')
+            }
+          }).catch(function (e) {
+            thisLv2.setState({ loading: false })
+            thisLv2.setState({
+              modalOpen: true,
+              modalHeading: 'jsreport failure!',
+              modalMessage: 'file: Login.js'
+            })
+          })
+      }).catch(function (e) {
         thisLv1.setState({
+          loading: false,
           modalOpen: true,
-          modalHeading: 'jsreport failure!',
-          modalMessage: 'file: Login.js'
+          modalHeading: 'Login failure!',
+          modalMessage: e.message
         })
       })
-    } catch (e) {
-      this.setState({ loading: false })
-      this.setState({
-        modalOpen: true,
-        modalHeading: 'Login failure!',
-        modalMessage: 'file: Login.js'
-      })
-    }
   }
 
   render() {
